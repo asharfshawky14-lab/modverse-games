@@ -3,6 +3,13 @@ name: MODVERSE Auto Update
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "update_games.py"
+      - "games.json"
+      - ".github/workflows/update-games.yml"
   schedule:
     - cron: "0 6 * * *"
 
