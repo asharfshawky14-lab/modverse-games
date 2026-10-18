@@ -24,6 +24,8 @@ button{width:100%;padding:12px;border-radius:10px;font:inherit;font-weight:750;c
 .primary{margin-top:18px;border:0;background:var(--green);color:#071006}
 .google{margin-top:10px;border:1px solid var(--border);background:#171c18;color:var(--text)}
 button:disabled{opacity:.6;cursor:wait}
+.forgot{text-align:left;margin-top:9px;font-size:13px}
+.forgot button{width:auto;padding:0;border:0;background:none;color:var(--green);font-weight:500}
 .message{display:none;margin-top:14px;padding:11px;border-radius:10px;font-size:13px;overflow-wrap:anywhere}
 .message.show{display:block}
 .message.error{color:#ffb8b8;background:#321818;border:1px solid #673030}
@@ -41,8 +43,14 @@ button:disabled{opacity:.6;cursor:wait}
   <form id="loginForm">
     <label for="email">البريد الإلكتروني</label>
     <input id="email" type="email" autocomplete="email" placeholder="name@example.com" required>
+
     <label for="password">كلمة المرور</label>
     <input id="password" type="password" autocomplete="current-password" placeholder="اكتب كلمة المرور" required>
+
+    <div class="forgot">
+      <button id="forgotBtn" type="button">نسيت كلمة المرور؟</button>
+    </div>
+
     <button class="primary" id="loginBtn" type="submit">تسجيل الدخول</button>
   </form>
 
@@ -58,6 +66,7 @@ button:disabled{opacity:.6;cursor:wait}
 const SUPABASE_URL = "https://aboenvwqlzmbjyqisarb.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_-U554BTwIf6tP-DA9uRgCg_5w5_XtU3";
 const HOME_URL = new URL("./", window.location.href).href;
+const RESET_URL = new URL("reset-password.html", window.location.href).href;
 
 const client = window.supabase.createClient(
   SUPABASE_URL,
@@ -67,6 +76,9 @@ const client = window.supabase.createClient(
 const form = document.getElementById("loginForm");
 const loginBtn = document.getElementById("loginBtn");
 const googleBtn = document.getElementById("googleBtn");
+const forgotBtn = document.getElementById("forgotBtn");
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
 const message = document.getElementById("message");
 
 function showMessage(text, type) {
@@ -82,14 +94,16 @@ client.auth.getSession().then(({data, error}) => {
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
+
   loginBtn.disabled = true;
   googleBtn.disabled = true;
+  forgotBtn.disabled = true;
   showMessage("جارٍ تسجيل الدخول…", "ok");
 
   try {
     const {data, error} = await client.auth.signInWithPassword({
-      email: document.getElementById("email").value.trim(),
-      password: document.getElementById("password").value
+      email: emailInput.value.trim(),
+      password: passwordInput.value
     });
 
     if (error) throw error;
@@ -105,8 +119,46 @@ form.addEventListener("submit", async (event) => {
         : "تعذّر تسجيل الدخول: " + error.message,
       "error"
     );
+
     loginBtn.disabled = false;
     googleBtn.disabled = false;
+    forgotBtn.disabled = false;
+  }
+});
+
+forgotBtn.addEventListener("click", async () => {
+  const email = emailInput.value.trim();
+
+  if (!email) {
+    showMessage("اكتب بريدك الإلكتروني الأول، وبعدها اضغط نسيت كلمة المرور.", "error");
+    emailInput.focus();
+    return;
+  }
+
+  if (!emailInput.checkValidity()) {
+    showMessage("اكتب بريدًا إلكترونيًا صحيحًا.", "error");
+    emailInput.focus();
+    return;
+  }
+
+  forgotBtn.disabled = true;
+  showMessage("جارٍ إرسال رابط استعادة كلمة المرور…", "ok");
+
+  try {
+    const {error} = await client.auth.resetPasswordForEmail(email, {
+      redirectTo: RESET_URL
+    });
+
+    if (error) throw error;
+
+    showMessage(
+      "لو البريد مسجل عندنا، هتوصلك رسالة فيها رابط تغيير كلمة المرور. راجع صندوق الوارد والرسائل غير المرغوب فيها.",
+      "ok"
+    );
+  } catch (error) {
+    showMessage("تعذّر إرسال رسالة الاستعادة: " + error.message, "error");
+  } finally {
+    forgotBtn.disabled = false;
   }
 });
 
@@ -114,12 +166,14 @@ googleBtn.addEventListener("click", async () => {
   googleBtn.disabled = true;
   showMessage("جارٍ فتح تسجيل الدخول باستخدام Google…", "ok");
 
-  const {error} = await client.auth.signInWithOAuth({
-    provider: "google",
-    options: {redirectTo: HOME_URL}
-  });
+  try {
+    const {error} = await client.auth.signInWithOAuth({
+      provider: "google",
+      options: {redirectTo: HOME_URL}
+    });
 
-  if (error) {
+    if (error) throw error;
+  } catch (error) {
     googleBtn.disabled = false;
     showMessage("تعذّر بدء تسجيل الدخول بـ Google: " + error.message, "error");
   }
