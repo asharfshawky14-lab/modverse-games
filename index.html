@@ -656,11 +656,11 @@ const detailsURL = gameId
             <span>${escapeHTML(source)}</span>
             <span class="game-size">${escapeHTML(version)}</span>
           </div>
-          ${
-            ${
-  detailsURL
-    ? `<a class="game-btn" href="${escapeHTML(detailsURL)}">تفاصيل اللعبة ←</a>`
-    : `<button class="game-btn" type="button" disabled style="opacity:.6;cursor:not-allowed">تفاصيل اللعبة غير متاحة</button>`
+                    ${
+            detailsURL
+              ? `<a class="game-btn" href="${escapeHTML(detailsURL)}">تفاصيل اللعبة ←</a>`
+              : `<button class="game-btn" type="button" disabled style="opacity:.6;cursor:not-allowed">تفاصيل اللعبة غير متاحة</button>`
+          }
 }
           }
         </div>
