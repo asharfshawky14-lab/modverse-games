@@ -1,0 +1,35 @@
+
+name: MODVERSE Auto Update
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  update-games:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Check games database
+        run: |
+          python -c "import json; d=json.load(open('games.json', encoding='utf-8')); print('MODVERSE database is valid'); print('Games:', len(d.get('games', [])))"
+
+      - name: Run collector when available
+        run: |
+          if [ -f update_games.py ]; then
+            python update_games.py
+          else
+            echo "Collector will be added in the next step."
+          fi
