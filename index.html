@@ -732,6 +732,93 @@ function closeSidebar(returnFocus = true) {
   sidebarOverlay.setAttribute("aria-hidden", "true");
 
   if (returnFocus) menuToggle.focus();
+  
+const SUPABASE_URL = "https://aboenvwqlzmbjyqisarb.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_-U554BTwIf6tP-DA9uRgCg_5w5_XtU3";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY,
+  {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true
+    }
+  }
+);
+
+const accountGreeting = document.getElementById("accountGreeting");
+const accountDescription = document.getElementById("accountDescription");
+const sidebarAccountButton = document.getElementById("sidebarAccountButton");
+const sidebarAccountText = document.getElementById("sidebarAccountText");
+
+let currentAccountUser = null;
+
+async function refreshAccountUI() {
+  const { data, error } = await supabaseClient.auth.getUser();
+
+  if (error) {
+    console.warn("تعذر قراءة الحساب:", error.message);
+  }
+
+  currentAccountUser = data?.user || null;
+
+  if (currentAccountUser) {
+    const { data: profile } = await supabaseClient
+      .from("profiles")
+      .select("full_name, username")
+      .eq("id", currentAccountUser.id)
+      .maybeSingle();
+
+    const name =
+      profile?.full_name ||
+      currentAccountUser.user_metadata?.full_name ||
+      currentAccountUser.email ||
+      "حسابك";
+
+    accountGreeting.textContent = "أهلًا، " + name;
+    accountDescription.textContent = profile?.username
+      ? "@" + profile.username
+      : currentAccountUser.email || "تم تسجيل الدخول";
+
+    sidebarAccountText.textContent = "تسجيل الخروج";
+  } else {
+    accountGreeting.textContent = "اكتشف عالم الألعاب";
+    accountDescription.textContent = "ألعابك وموداتك في مكان واحد.";
+    sidebarAccountText.textContent = "تسجيل الدخول";
+  }
+}
+
+sidebarAccountButton.addEventListener("click", async () => {
+  if (!currentAccountUser) {
+    window.location.href = new URL("login.html", window.location.href).href;
+    return;
+  }
+
+  sidebarAccountButton.disabled = true;
+
+  const { error } = await supabaseClient.auth.signOut();
+
+  sidebarAccountButton.disabled = false;
+
+  if (error) {
+    showSidebarMessage("تعذر تسجيل الخروج. حاول مرة أخرى.");
+    return;
+  }
+
+  currentAccountUser = null;
+  await refreshAccountUI();
+  showSidebarMessage("تم تسجيل الخروج بنجاح.");
+});
+
+supabaseClient.auth.onAuthStateChange((event, session) => {
+  currentAccountUser = session?.user || null;
+  window.setTimeout(() => refreshAccountUI(), 0);
+});
+
+refreshAccountUI();
+
 }
 
 function showSidebarMessage(message) {
