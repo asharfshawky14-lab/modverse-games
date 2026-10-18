@@ -1,4 +1,3 @@
-
 {
   "site": "MODVERSE",
   "version": 2,
@@ -10,5 +9,6 @@
       "url": "https://f-droid.org/repo/index-v1.json"
     }
   ],
-  "games": []
+  "games": [],
+  "last_checked": "2026-10-18T13:10:34.731654+00:00"
 }
