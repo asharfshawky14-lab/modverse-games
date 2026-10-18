@@ -9,128 +9,62 @@
 
 <style>
 :root {
-  --bg: #090b0a;
-  --panel: #111512;
-  --green: #8cff65;
-  --text: #f2f5f2;
-  --muted: #9ca79e;
-  --border: #242d26;
+  --bg:#090b0a;
+  --panel:#111512;
+  --green:#8cff65;
+  --text:#f2f5f2;
+  --muted:#9ca79e;
+  --border:#242d26;
 }
-* { box-sizing: border-box; }
-body {
-  margin: 0;
-  min-height: 100vh;
-  display: grid;
-  place-items: center;
-  padding: 20px;
-  background: radial-gradient(ellipse at 15% 10%, #28552a38, transparent 45%), var(--bg);
-  color: var(--text);
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;display:grid;place-items:center;
+  padding:20px;
+  background:radial-gradient(ellipse at 15% 10%,#28552a38,transparent 45%),var(--bg);
+  color:var(--text);
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif
 }
-a { color: var(--green); text-decoration: none; }
-.card {
-  width: min(100%, 450px);
-  padding: 26px;
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  background: var(--panel);
-  box-shadow: 0 20px 70px #0007;
+a{color:var(--green);text-decoration:none}
+.card{
+  width:min(100%,450px);padding:26px;
+  border:1px solid var(--border);border-radius:20px;
+  background:var(--panel);box-shadow:0 20px 70px #0007
 }
-.brand {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  direction: ltr;
-  font-size: 26px;
-  font-weight: 900;
-  margin-bottom: 12px;
+.brand{
+  display:flex;justify-content:center;align-items:center;gap:10px;
+  direction:ltr;font-size:26px;font-weight:900;margin-bottom:12px
 }
-.logo {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 13px;
-  background: var(--green);
-  color: #071006;
+.logo{
+  display:grid;place-items:center;width:44px;height:44px;
+  border-radius:13px;background:var(--green);color:#071006
 }
-.brand span { color: var(--green); }
-h1 { text-align: center; font-size: 23px; margin: 10px 0 4px; }
-.subtitle {
-  text-align: center;
-  color: var(--muted);
-  font-size: 13px;
-  margin: 0 0 22px;
+.brand span{color:var(--green)}
+h1{text-align:center;font-size:23px;margin:10px 0 4px}
+.subtitle{text-align:center;color:var(--muted);font-size:13px;margin:0 0 22px}
+label{display:block;font-size:13px;margin:13px 0 6px}
+input{
+  width:100%;padding:12px;border:1px solid var(--border);
+  border-radius:10px;background:var(--bg);color:var(--text);
+  font:inherit;outline:none
 }
-label { display: block; font-size: 13px; margin: 13px 0 6px; }
-input {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--bg);
-  color: var(--text);
-  font: inherit;
-  outline: none;
+input:focus{border-color:var(--green)}
+button{
+  width:100%;padding:12px;border-radius:10px;font:inherit;
+  font-weight:750;cursor:pointer
 }
-input:focus { border-color: var(--green); }
-button {
-  width: 100%;
-  padding: 12px;
-  border-radius: 10px;
-  font: inherit;
-  font-weight: 750;
-  cursor: pointer;
+.primary{margin-top:20px;border:0;background:var(--green);color:#071006}
+.google{margin-top:10px;border:1px solid var(--border);background:#171c18;color:var(--text)}
+button:disabled{opacity:.6;cursor:wait}
+.message{
+  display:none;margin-top:14px;padding:11px;border-radius:10px;
+  font-size:13px;overflow-wrap:anywhere
 }
-.primary {
-  margin-top: 20px;
-  border: 0;
-  background: var(--green);
-  color: #071006;
-}
-.google {
-  margin-top: 10px;
-  border: 1px solid var(--border);
-  background: #171c18;
-  color: var(--text);
-}
-button:disabled { opacity: .6; cursor: wait; }
-.message {
-  display: none;
-  margin-top: 14px;
-  padding: 11px;
-  border-radius: 10px;
-  font-size: 13px;
-  overflow-wrap: anywhere;
-}
-.message.show { display: block; }
-.message.error {
-  color: #ffb8b8;
-  background: #321818;
-  border: 1px solid #673030;
-}
-.message.ok {
-  color: #c7ffb8;
-  background: #172819;
-  border: 1px solid #315b30;
-}
-.bottom {
-  text-align: center;
-  color: var(--muted);
-  font-size: 13px;
-  margin-top: 20px;
-}
-.back {
-  display: block;
-  text-align: center;
-  margin-top: 16px;
-  color: var(--muted);
-  font-size: 13px;
-}
-@media (max-width: 380px) {
-  .card { padding: 19px; }
-}
+.message.show{display:block}
+.message.error{color:#ffb8b8;background:#321818;border:1px solid #673030}
+.message.ok{color:#c7ffb8;background:#172819;border:1px solid #315b30}
+.bottom{text-align:center;color:var(--muted);font-size:13px;margin-top:20px}
+.back{display:block;text-align:center;margin-top:16px;color:var(--muted);font-size:13px}
+@media(max-width:380px){.card{padding:19px}}
 </style>
 </head>
 
@@ -146,59 +80,27 @@ button:disabled { opacity: .6; cursor: wait; }
 
   <form id="registerForm">
     <label for="fullName">الاسم الكامل</label>
-    <input
-      id="fullName"
-      type="text"
-      autocomplete="name"
-      maxlength="100"
-      placeholder="اكتب اسمك الكامل"
-      required
-    >
+    <input id="fullName" type="text" autocomplete="name"
+      maxlength="100" placeholder="اكتب اسمك الكامل" required>
 
     <label for="username">اسم المستخدم</label>
-    <input
-      id="username"
-      type="text"
-      autocomplete="username"
-      minlength="3"
-      maxlength="20"
-      pattern="[A-Za-z0-9_]+"
-      title="استخدم الحروف الإنجليزية والأرقام والشرطة السفلية فقط"
-      placeholder="مثال: Ashraf_14"
-      required
-    >
+    <input id="username" type="text" autocomplete="username"
+      minlength="3" maxlength="20"
+      pattern="[A-Za-z0-9_]{3,20}"
+      title="من 3 إلى 20 حرفًا إنجليزيًا أو رقمًا أو _"
+      placeholder="مثال: Ashraf_14" required>
 
     <label for="email">البريد الإلكتروني</label>
-    <input
-      id="email"
-      type="email"
-      autocomplete="email"
-      maxlength="254"
-      placeholder="name@example.com"
-      required
-    >
+    <input id="email" type="email" autocomplete="email"
+      maxlength="254" placeholder="name@example.com" required>
 
     <label for="password">كلمة المرور</label>
-    <input
-      id="password"
-      type="password"
-      autocomplete="new-password"
-      minlength="8"
-      maxlength="72"
-      placeholder="8 أحرف على الأقل"
-      required
-    >
+    <input id="password" type="password" autocomplete="new-password"
+      minlength="8" maxlength="72" placeholder="8 أحرف على الأقل" required>
 
     <label for="confirmPassword">تأكيد كلمة المرور</label>
-    <input
-      id="confirmPassword"
-      type="password"
-      autocomplete="new-password"
-      minlength="8"
-      maxlength="72"
-      placeholder="اكتب كلمة المرور مرة أخرى"
-      required
-    >
+    <input id="confirmPassword" type="password" autocomplete="new-password"
+      minlength="8" maxlength="72" placeholder="اكتب كلمة المرور مرة أخرى" required>
 
     <button class="primary" id="registerBtn" type="submit">
       إنشاء الحساب
@@ -227,7 +129,6 @@ const SUPABASE_URL = "https://aboenvwqlzmbjyqisarb.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_-U554BTwIf6tP-DA9uRgCg_5w5_XtU3";
 
 const HOME_URL = new URL("./", window.location.href).href;
-const LOGIN_URL = new URL("login.html", window.location.href).href;
 
 const client = window.supabase.createClient(
   SUPABASE_URL,
@@ -257,14 +158,20 @@ function setBusy(busy) {
 }
 
 function readableError(error) {
-  const text = String(error?.message || "").toLowerCase();
+  const original = String(error?.message || "");
+  const text = original.toLowerCase();
 
   if (
     text.includes("already registered") ||
-    text.includes("already exists") ||
-    text.includes("user already registered")
+    text.includes("user already registered") ||
+    text.includes("email address is already") ||
+    text.includes("already exists")
   ) {
-    return "هذا البريد مسجل بالفعل. جرّب تسجيل الدخول.";
+    return "هذا البريد الإلكتروني مسجل بالفعل. جرّب تسجيل الدخول.";
+  }
+
+  if (text.includes("database error saving new user")) {
+    return "تعذّر حفظ بيانات الحساب. ممكن يكون اسم المستخدم مستخدمًا بالفعل؛ جرّب اسمًا آخر. لو استمر الخطأ، ابعتلي نص الرسالة.";
   }
 
   if (text.includes("invalid email")) {
@@ -282,13 +189,12 @@ function readableError(error) {
     return "محاولات كثيرة. انتظر قليلًا ثم حاول مرة أخرى.";
   }
 
-  return "حصل خطأ: " + (error?.message || "تعذّر إكمال العملية.");
+  return "حصل خطأ: " + (original || "تعذّر إكمال العملية.");
 }
 
 async function checkExistingSession() {
   try {
     const { data, error } = await client.auth.getSession();
-
     if (error) throw error;
 
     if (data.session) {
@@ -316,10 +222,7 @@ form.addEventListener("submit", async (event) => {
   }
 
   if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
-    showMessage(
-      "اسم المستخدم يجب أن يكون من 3 إلى 20 حرفًا، ويحتوي على حروف إنجليزية أو أرقام أو _ فقط.",
-      "error"
-    );
+    showMessage("اسم المستخدم يجب أن يكون من 3 إلى 20 حرفًا، ويحتوي على حروف إنجليزية أو أرقام أو _ فقط.", "error");
     return;
   }
 
@@ -357,25 +260,21 @@ form.addEventListener("submit", async (event) => {
     if (error) throw error;
 
     if (data.user && data.session) {
-      showMessage(
-        "تم إنشاء الحساب وتسجيل الدخول. جارٍ تحويلك للموقع…",
-        "ok"
-      );
-
+      showMessage("تم إنشاء الحساب بنجاح. جارٍ تحويلك للموقع…", "ok");
       window.location.replace(HOME_URL);
       return;
     }
 
     if (data.user && !data.session) {
       showMessage(
-        "تم إرسال طلب إنشاء الحساب. لو تأكيد البريد مفعّل، افتح رسالة Supabase واضغط رابط التأكيد، وبعدها سجّل الدخول.",
+        "تم إرسال طلب إنشاء الحساب. افتح رسالة تأكيد البريد الإلكتروني إذا كان التأكيد مطلوبًا، ثم سجّل الدخول.",
         "ok"
       );
       form.reset();
       return;
     }
 
-    showMessage("لم نتأكد من إنشاء الحساب. حاول تسجيل الدخول للتحقق.", "error");
+    showMessage("لم نتأكد من إنشاء الحساب. حاول مرة أخرى.", "error");
 
   } catch (error) {
     console.error("Registration failed:", error);
