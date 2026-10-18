@@ -201,19 +201,56 @@ def get_description(parser):
 
 
 def get_image(parser, page_url):
-    image = (
-        parser.meta.get("og:image")
-        or parser.meta.get("twitter:image")
-        or parser.meta.get("twitter:image:src")
-    )
+    candidates = []
 
-    if not image:
-        for item in parser.meta.get("images", []):
-            if item.get("src"):
-                image = item["src"]
-                break
+    for key in (
+        "og:image",
+        "twitter:image",
+        "twitter:image:src",
+        "og:image:url",
+    ):
+        value = parser.meta.get(key)
+        if value:
+            candidates.append(value)
 
-    return urljoin(page_url, image) if image else ""
+    for item in parser.meta.get("images", []):
+        src = item.get("src", "").strip()
+        if src:
+            candidates.append(src)
+
+    is_happymod = normalized_host(page_url) == "happymod.to"
+
+    for candidate in candidates:
+        image_url = urljoin(page_url, candidate.strip())
+
+        parsed = urlparse(image_url)
+        if parsed.scheme not in ("http", "https"):
+            continue
+
+        image_path = parsed.path.lower()
+        filename = image_path.rsplit("/", 1)[-1]
+
+        if is_happymod:
+            blocked_image_names = (
+                "logo.png",
+                "favicon",
+                "placeholder",
+                "default-avatar",
+                "site-logo",
+            )
+
+            if any(name in filename for name in blocked_image_names):
+                continue
+
+            if "/static/img/logo" in image_path:
+                continue
+
+        if filename.endswith((
+            ".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"
+        )):
+            return image_url
+
+    return ""
 
 
 def normalized_host(url):
