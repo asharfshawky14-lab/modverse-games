@@ -632,7 +632,13 @@ function renderGames() {
     const image = safeURL(
       game.image || game.thumbnail || game.cover || game.icon || game.images?.[0] || ""
     );
-    const gameURL = safeURL(game.url || game.download_url || game.link || "");
+    const gameId = String(
+  game.id || game.detail_url || game.url || game.download_url || ""
+);
+
+const detailsURL = gameId
+  ? "game.html?id=" + encodeURIComponent(gameId)
+  : "";
     const version = String(game.version || "غير محدد");
     const source = String(game.source || "مصدر غير محدد");
 
@@ -651,9 +657,11 @@ function renderGames() {
             <span class="game-size">${escapeHTML(version)}</span>
           </div>
           ${
-            gameURL
-              ? `<a class="game-btn" href="${escapeHTML(gameURL)}" target="_blank" rel="noopener noreferrer">عرض اللعبة ↗</a>`
-              : `<button class="game-btn" type="button" disabled style="opacity:.6;cursor:not-allowed">الرابط غير متوفر</button>`
+            ${
+  detailsURL
+    ? `<a class="game-btn" href="${escapeHTML(detailsURL)}">تفاصيل اللعبة ←</a>`
+    : `<button class="game-btn" type="button" disabled style="opacity:.6;cursor:not-allowed">تفاصيل اللعبة غير متاحة</button>`
+}
           }
         </div>
       </article>
