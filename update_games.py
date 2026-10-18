@@ -17,7 +17,7 @@ USER_AGENT = (
 "AppleWebKit/537.36 Chrome/130.0.0.0 Mobile Safari/537.36"
 )
 
-صفحات ليست ألعابًا، حتى لو كانت موجودة داخل موقع الألعاب
+# صفحات ليست ألعابًا، حتى لو كانت موجودة داخل موقع الألعاب
 
 BLOCKED_PATHS = {
 "games", "game", "appss", "apps", "app", "applications",
@@ -41,7 +41,7 @@ BLOCKED_WORDS = (
 "calculator", "weather", "keyboard-app"
 )
 
-إشارات تساعد على تمييز صفحات الألعاب الحقيقية.
+# إشارات تساعد على تمييز صفحات الألعاب الحقيقية.
 
 GAME_WORDS = (
 "game", "games", "لعبة", "العاب", "ألعاب", "لعبه",
