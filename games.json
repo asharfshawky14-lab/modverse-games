@@ -4,11 +4,35 @@
   "description": "Android games and mods catalog",
   "sources": [
     {
-      "name": "F-Droid",
-      "type": "fdroid",
-      "url": "https://f-droid.org/repo/index-v1.json"
+      "name": "F-Droid Games Search",
+      "type": "fdroid_search",
+      "url": "https://search.f-droid.org/api/search_apps?q=game"
+    },
+    {
+      "name": "F-Droid Puzzle Search",
+      "type": "fdroid_search",
+      "url": "https://search.f-droid.org/api/search_apps?q=puzzle"
+    },
+    {
+      "name": "F-Droid Arcade Search",
+      "type": "fdroid_search",
+      "url": "https://search.f-droid.org/api/search_apps?q=arcade"
+    },
+    {
+      "name": "F-Droid Chess Search",
+      "type": "fdroid_search",
+      "url": "https://search.f-droid.org/api/search_apps?q=chess"
+    },
+    {
+      "name": "F-Droid Racing Search",
+      "type": "fdroid_search",
+      "url": "https://search.f-droid.org/api/search_apps?q=racing"
+    },
+    {
+      "name": "F-Droid Strategy Search",
+      "type": "fdroid_search",
+      "url": "https://search.f-droid.org/api/search_apps?q=strategy"
     }
   ],
-  "games": [],
-  "last_checked": "2026-10-18T13:10:34.731654+00:00"
+  "games": []
 }
