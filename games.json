@@ -1,7 +1,14 @@
+
 {
   "site": "MODVERSE",
-  "version": 1,
+  "version": 2,
   "description": "Android games and mods catalog",
-  "sources": [],
+  "sources": [
+    {
+      "name": "F-Droid",
+      "type": "fdroid",
+      "url": "https://f-droid.org/repo/index-v1.json"
+    }
+  ],
   "games": []
 }
