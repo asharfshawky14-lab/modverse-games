@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up Python
@@ -22,14 +22,13 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Check games database
-        run: |
-          python -c "import json; d=json.load(open('games.json', encoding='utf-8')); print('MODVERSE database is valid'); print('Games:', len(d.get('games', [])))"
+      - name: Run game collector
+        run: python update_games.py
 
-      - name: Run collector when available
+      - name: Save updated database
         run: |
-          if [ -f update_games.py ]; then
-            python update_games.py
-          else
-            echo "Collector will be added in the next step."
-          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add games.json
+          git diff --cached --quiet || git commit -m "Update MODVERSE game catalog"
+          git push
