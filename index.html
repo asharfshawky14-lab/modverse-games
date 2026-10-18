@@ -447,7 +447,7 @@ function renderGames() {
     const title = getTitle(game);
     const category = getCategory(game);
     const description = getDescription(game);
-    const image = safeURL(game.image || game.thumbnail || "");
+    const image = safeURL(game.image || game.thumbnail || game.cover || game.icon || game.images?.[0] || "");
     const gameURL = safeURL(game.url || game.download_url || game.link || "");
     const version = String(game.version || "غير محدد");
     const source = String(game.source || "مصدر غير محدد");
