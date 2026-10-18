@@ -1,0 +1,922 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090b0a">
+  <meta name="description" content="MODVERSE - اكتشف ألعاب أندرويد وعالم المودات والتحديثات في مكان واحد.">
+  <title>MODVERSE | عالم الألعاب</title>
+
+  <style>
+    :root {
+      --bg: #090b0a;
+      --panel: #111512;
+      --panel2: #171c18;
+      --green: #8cff65;
+      --green2: #51d94a;
+      --text: #f2f5f2;
+      --muted: #9ca79e;
+      --border: #242d26;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      line-height: 1.7;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button, input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .container {
+      width: min(1160px, 92%);
+      margin: auto;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(9, 11, 10, .94);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 24px;
+      font-weight: 950;
+      letter-spacing: 1px;
+      direction: ltr;
+    }
+
+    .logo-icon {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 13px;
+      background: var(--green);
+      color: #071006;
+      box-shadow: 0 0 24px #8cff6522;
+    }
+
+    .logo span {
+      color: var(--green);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .nav-links a:hover {
+      color: var(--green);
+    }
+
+    .nav-button {
+      border: 1px solid #42683b;
+      background: #152016;
+      color: var(--green);
+      padding: 9px 15px;
+      border-radius: 10px;
+      font-weight: 700;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 70px 0 55px;
+      background:
+        radial-gradient(ellipse at 15% 15%, #28552a38, transparent 42%),
+        radial-gradient(ellipse at 90% 90%, #173e2730, transparent 40%);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      align-items: center;
+      gap: 38px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      padding: 6px 12px;
+      border: 1px solid #345332;
+      background: #132016;
+      color: var(--green);
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+
+    .eyebrow i {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 10px var(--green);
+    }
+
+    h1 {
+      font-size: clamp(36px, 5vw, 62px);
+      line-height: 1.2;
+      margin-bottom: 18px;
+      letter-spacing: -.8px;
+    }
+
+    h1 span {
+      color: var(--green);
+    }
+
+    .hero p {
+      max-width: 520px;
+      color: var(--muted);
+      font-size: 16px;
+      margin-bottom: 25px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .primary-btn, .secondary-btn {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 9px;
+      border-radius: 12px;
+      padding: 12px 20px;
+      font-weight: 850;
+      border: 1px solid transparent;
+    }
+
+    .primary-btn {
+      background: var(--green);
+      color: #091007;
+    }
+
+    .primary-btn:hover {
+      background: #a5ff86;
+      transform: translateY(-1px);
+    }
+
+    .secondary-btn {
+      border-color: var(--border);
+      background: var(--panel);
+      color: var(--text);
+    }
+
+    .hero-art {
+      min-height: 300px;
+      position: relative;
+      display: grid;
+      place-items: center;
+      border: 1px solid #344337;
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at 50% 40%, #5c9b3b28, transparent 55%),
+        linear-gradient(145deg, #18221a, #0c100d);
+      overflow: hidden;
+    }
+
+    .hero-art::before, .hero-art::after {
+      content: "";
+      position: absolute;
+      border: 1px solid #8cff6522;
+      border-radius: 50%;
+      width: 290px;
+      height: 290px;
+    }
+
+    .hero-art::after {
+      width: 220px;
+      height: 220px;
+    }
+
+    .hero-symbol {
+      z-index: 1;
+      font-size: 115px;
+      filter: drop-shadow(0 0 28px #8cff6545);
+    }
+
+    .art-label {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .art-label strong {
+      color: var(--green);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border: 1px solid var(--border);
+      background: #0e120f;
+      border-radius: 15px;
+      margin-top: 32px;
+      padding: 17px 8px;
+    }
+
+    .stat {
+      text-align: center;
+      border-left: 1px solid var(--border);
+    }
+
+    .stat:last-child {
+      border-left: 0;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 19px;
+      color: var(--green);
+    }
+
+    .stat span {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .section {
+      padding: 34px 0;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .section-heading h2 {
+      font-size: 23px;
+    }
+
+    .section-heading p {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 3px;
+    }
+
+    .text-link {
+      color: var(--green);
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .search-wrap {
+      margin: 8px 0 22px;
+      position: relative;
+    }
+
+    .search-wrap span {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 19px;
+    }
+
+    .search-wrap input {
+      width: 100%;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 15px 48px 15px 15px;
+      outline: none;
+      color: var(--text);
+    }
+
+    .search-wrap input:focus {
+      border-color: var(--green2);
+      box-shadow: 0 0 0 3px #8cff6510;
+    }
+
+    .categories {
+      display: flex;
+      gap: 9px;
+      overflow-x: auto;
+      padding: 2px 0 12px;
+      scrollbar-width: thin;
+    }
+
+    .category {
+      flex: 0 0 auto;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      background: var(--panel);
+      padding: 9px 17px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    .category.active, .category:hover {
+      background: var(--green);
+      color: #091007;
+      border-color: var(--green);
+    }
+
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 17px;
+    }
+
+    .game-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: transform .2s, border-color .2s;
+    }
+
+    .game-card:hover {
+      transform: translateY(-4px);
+      border-color: #547c49;
+    }
+
+    .game-cover {
+      height: 155px;
+      position: relative;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      background: linear-gradient(145deg, var(--cover1), var(--cover2));
+    }
+
+    .game-cover::before {
+      content: "";
+      position: absolute;
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: #ffffff0c;
+      right: -28px;
+      top: -40px;
+    }
+
+    .game-emoji {
+      font-size: 67px;
+      filter: drop-shadow(0 9px 12px #0008);
+      z-index: 1;
+    }
+
+    .game-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 2;
+      background: #0a0d0bdc;
+      border: 1px solid #ffffff1c;
+      color: var(--green);
+      font-size: 10px;
+      padding: 4px 8px;
+      border-radius: 7px;
+    }
+
+    .game-info {
+      padding: 13px;
+    }
+
+    .game-info h3 {
+      font-size: 15px;
+      margin-bottom: 3px;
+    }
+
+    .game-desc {
+      color: var(--muted);
+      font-size: 11px;
+      min-height: 38px;
+    }
+
+    .game-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin: 12px 0;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .game-size {
+      color: var(--green);
+    }
+
+    .game-btn {
+      width: 100%;
+      border: 1px solid #395a34;
+      background: #18251a;
+      color: var(--green);
+      padding: 9px;
+      border-radius: 9px;
+      font-weight: 800;
+      font-size: 12px;
+    }
+
+    .game-btn:hover {
+      background: #233c25;
+    }
+
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 35px;
+      color: var(--muted);
+      border: 1px dashed var(--border);
+      border-radius: 14px;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
+
+    .feature {
+      border: 1px solid var(--border);
+      background: var(--panel);
+      padding: 21px;
+      border-radius: 15px;
+    }
+
+    .feature-icon {
+      font-size: 27px;
+      margin-bottom: 9px;
+    }
+
+    .feature h3 {
+      font-size: 15px;
+      margin-bottom: 5px;
+    }
+
+    .feature p {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .notice {
+      margin-top: 20px;
+      padding: 14px;
+      border: 1px solid #66552a;
+      background: #211d11;
+      border-radius: 12px;
+      color: #e7d5a5;
+      font-size: 12px;
+    }
+
+    footer {
+      margin-top: 30px;
+      padding: 30px 0;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .footer-brand {
+      font-size: 17px;
+      font-weight: 900;
+      color: var(--green);
+      direction: ltr;
+    }
+
+    @media (max-width: 850px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-art {
+        min-height: 220px;
+      }
+
+      .hero-symbol {
+        font-size: 90px;
+      }
+
+      .games-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .game-cover {
+        height: 135px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .logo {
+        font-size: 20px;
+      }
+
+      .nav-button {
+        padding: 8px 10px;
+        font-size: 12px;
+      }
+
+      .game-cover {
+        height: 115px;
+      }
+
+      .game-emoji {
+        font-size: 54px;
+      }
+
+      .game-info {
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container nav">
+      <a class="logo" href="#" aria-label="MODVERSE الرئيسية">
+        <span class="logo-icon">M</span>
+        MOD<span>VERSE</span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="#home">الرئيسية</a>
+        <a href="#games">الألعاب</a>
+        <a href="#mods">المودات</a>
+        <a href="#about">عن الموقع</a>
+      </nav>
+
+      <a class="nav-button" href="#games">اكتشف الألعاب ↗</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="container hero-grid">
+        <div>
+          <div class="eyebrow"><i></i> عالم الألعاب بين إيديك</div>
+
+          <h1>
+            اكتشف عالمك<br>
+            <span>بطريقتك.</span>
+          </h1>
+
+          <p>
+            مرحبًا بك في MODVERSE، وجهتك لاكتشاف ألعاب أندرويد
+            والتعرف على المودات والتحديثات ومصادر الألعاب في مكان واحد.
+          </p>
+
+          <div class="hero-actions">
+            <a class="primary-btn" href="#games">🎮 استكشف الألعاب</a>
+            <a class="secondary-btn" href="#mods">اكتشف المودات ↗</a>
+          </div>
+
+          <div class="stats">
+            <div class="stat">
+              <strong>Android</strong>
+              <span>منصة الألعاب</span>
+            </div>
+            <div class="stat">
+              <strong>MODS</strong>
+              <span>عالم التعديلات</span>
+            </div>
+            <div class="stat">
+              <strong>FREE</strong>
+              <span>الموقع مجاني</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-art" aria-label="تصميم MODVERSE">
+          <div class="hero-symbol">🎮</div>
+          <div class="art-label">
+            <span>YOUR NEXT ADVENTURE</span>
+            <strong>MODVERSE //</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="games">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <h2>استكشف الألعاب <span style="color:var(--green)">✦</span></h2>
+            <p>ابحث واكتشف الألعاب من مكتبتنا التجريبية.</p>
+          </div>
+          <a class="text-link" href="#games">كل الألعاب ←</a>
+        </div>
+
+        <div class="search-wrap">
+          <span>⌕</span>
+          <input
+            id="searchInput"
+            type="search"
+            placeholder="ابحث عن اسم لعبة..."
+            aria-label="ابحث عن لعبة"
+          >
+        </div>
+
+        <div class="categories" id="categories">
+          <button class="category active" data-category="الكل">الكل</button>
+          <button class="category" data-category="مغامرات">مغامرات</button>
+          <button class="category" data-category="سباق">سباق</button>
+          <button class="category" data-category="ألغاز">ألغاز</button>
+          <button class="category" data-category="استراتيجية">استراتيجية</button>
+        </div>
+
+        <div class="games-grid" id="gamesGrid"></div>
+
+        <div class="notice">
+          ⚠️ الألعاب الظاهرة الآن أمثلة تجريبية للتصميم وليست روابط تحميل
+          حقيقية. سنضيف بيانات الألعاب ومصادر التنزيل بعد تجهيز نظام المكتبة.
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="mods">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <h2>عالم المودات</h2>
+            <p>تعديلات وإضافات للألعاب المتوافقة.</p>
+          </div>
+        </div>
+
+        <div class="feature-grid">
+          <article class="feature">
+            <div class="feature-icon">🧩</div>
+            <h3>تعديلات الألعاب</h3>
+            <p>اكتشف المودات التي يوفرها مطوروها أو تسمح تراخيصها باستخدامها.</p>
+          </article>
+
+          <article class="feature">
+            <div class="feature-icon">🔄</div>
+            <h3>الإصدارات والتحديثات</h3>
+            <p>مكان منظم لعرض أرقام الإصدارات ومصادر الملفات وتاريخ تحديث البيانات.</p>
+          </article>
+
+          <article class="feature">
+            <div class="feature-icon">🛡️</div>
+            <h3>معلومات الأمان</h3>
+            <p>نعرض مصدر الملف ومعلومات التحقق المتاحة، دون ادعاء أن الفحص يضمن الأمان الكامل.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="about">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <h2>عن MODVERSE</h2>
+            <p>مشروع مستقل نطوره خطوة بخطوة.</p>
+          </div>
+        </div>
+
+        <p style="color:var(--muted);max-width:760px;font-size:14px">
+          هدفنا إنشاء مكتبة سهلة الاستخدام لألعاب أندرويد، مع معلومات واضحة
+          عن الألعاب وإصداراتها ومصادرها. سنضيف المحتوى من مصادر موثوقة تسمح
+          باستخدام بياناتها وملفاتها، وسنطوّر نظام الإدارة والتحديث التلقائي
+          في المراحل التالية.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <div>
+        <div class="footer-brand">MODVERSE</div>
+        <div>اكتشف. العب. استكشف.</div>
+      </div>
+      <div>© <span id="year"></span> MODVERSE</div>
+    </div>
+  </footer>
+
+  <script>
+    const games = [
+      {
+        name: "مغامرة الغابة",
+        category: "مغامرات",
+        emoji: "🌲",
+        description: "استكشف عالمًا مليئًا بالأسرار.",
+        size: "تجريبي",
+        badge: "مغامرات",
+        colors: ["#24472b", "#101b15"]
+      },
+      {
+        name: "سباق السرعة",
+        category: "سباق",
+        emoji: "🏎️",
+        description: "تحديات قيادة وسباقات مثيرة.",
+        size: "تجريبي",
+        badge: "سباق",
+        colors: ["#49321c", "#1c1510"]
+      },
+      {
+        name: "لغز المعبد",
+        category: "ألغاز",
+        emoji: "🗿",
+        description: "حل الألغاز واكتشف الأسرار.",
+        size: "تجريبي",
+        badge: "ألغاز",
+        colors: ["#30314f", "#141522"]
+      },
+      {
+        name: "قادة الممالك",
+        category: "استراتيجية",
+        emoji: "🏰",
+        description: "خطط لمملكتك وطور استراتيجيتك.",
+        size: "تجريبي",
+        badge: "استراتيجية",
+        colors: ["#493c20", "#1e1a10"]
+      },
+      {
+        name: "رحلة الفضاء",
+        category: "مغامرات",
+        emoji: "🚀",
+        description: "انطلق في رحلة عبر المجرات.",
+        size: "تجريبي",
+        badge: "جديد",
+        colors: ["#183b4b", "#0c1720"]
+      },
+      {
+        name: "عالم المكعبات",
+        category: "مغامرات",
+        emoji: "🧱",
+        description: "ابنِ واستكشف عالمك الخاص.",
+        size: "تجريبي",
+        badge: "استكشاف",
+        colors: ["#31512b", "#172016"]
+      },
+      {
+        name: "تحدي الطرق",
+        category: "سباق",
+        emoji: "🏁",
+        description: "اختبر مهارتك على الطرق الصعبة.",
+        size: "تجريبي",
+        badge: "تحدي",
+        colors: ["#492929", "#1d1111"]
+      },
+      {
+        name: "الأبواب الغامضة",
+        category: "ألغاز",
+        emoji: "🔐",
+        description: "استخدم ذكاءك لفتح الأبواب.",
+        size: "تجريبي",
+        badge: "غموض",
+        colors: ["#39304a", "#18121f"]
+      }
+    ];
+
+    const grid = document.getElementById("gamesGrid");
+    const searchInput = document.getElementById("searchInput");
+    const categoryButtons = document.querySelectorAll(".category");
+
+    let activeCategory = "الكل";
+
+    function renderGames() {
+      const query = searchInput.value.trim().toLowerCase();
+
+      const filtered = games.filter(game => {
+        const matchesCategory =
+          activeCategory === "الكل" ||
+          game.category === activeCategory;
+
+        const matchesSearch =
+          game.name.toLowerCase().includes(query) ||
+          game.category.toLowerCase().includes(query) ||
+          game.description.toLowerCase().includes(query);
+
+        return matchesCategory && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML =
+          '<div class="empty-state">لا توجد ألعاب مطابقة لبحثك.</div>';
+        return;
+      }
+
+      grid.innerHTML = filtered.map((game, index) => `
+        <article class="game-card">
+          <div class="game-cover"
+               style="--cover1:${game.colors[0]};--cover2:${game.colors[1]}">
+            <span class="game-badge">${game.badge}</span>
+            <span class="game-emoji">${game.emoji}</span>
+          </div>
+
+          <div class="game-info">
+            <h3>${game.name}</h3>
+            <p class="game-desc">${game.description}</p>
+
+            <div class="game-meta">
+              <span>${game.category}</span>
+              <span class="game-size">${game.size}</span>
+            </div>
+
+            <button class="game-btn" data-index="${index}">
+              تفاصيل اللعبة
+            </button>
+          </div>
+        </article>
+      `).join("");
+
+      grid.querySelectorAll(".game-btn").forEach(button => {
+        button.addEventListener("click", () => {
+          const game = filtered[Number(button.dataset.index)];
+
+          alert(
+            "اللعبة: " + game.name +
+            "\\nالتصنيف: " + game.category +
+            "\\n\\nهذه بطاقة تجريبية. سنربطها لاحقًا بصفحة اللعبة الحقيقية."
+          );
+        });
+      });
+    }
+
+    searchInput.addEventListener("input", renderGames);
+
+    categoryButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        activeCategory = button.dataset.category;
+
+        categoryButtons.forEach(item => {
+          item.classList.toggle("active", item === button);
+        });
+
+        renderGames();
+      });
+    });
+
+    document.getElementById("year").textContent =
+      new Date().getFullYear();
+
+    renderGames();
+  </script>
+</body>
+</html>
