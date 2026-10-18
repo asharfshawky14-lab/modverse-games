@@ -1,0 +1,410 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#090b0a">
+<title>إنشاء حساب | MODVERSE</title>
+
+<style>
+:root {
+  --bg: #090b0a;
+  --panel: #111512;
+  --green: #8cff65;
+  --text: #f2f5f2;
+  --muted: #9ca79e;
+  --border: #242d26;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: radial-gradient(ellipse at 15% 10%, #28552a38, transparent 45%), var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+a { color: var(--green); text-decoration: none; }
+.card {
+  width: min(100%, 450px);
+  padding: 26px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--panel);
+  box-shadow: 0 20px 70px #0007;
+}
+.brand {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  direction: ltr;
+  font-size: 26px;
+  font-weight: 900;
+  margin-bottom: 12px;
+}
+.logo {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 13px;
+  background: var(--green);
+  color: #071006;
+}
+.brand span { color: var(--green); }
+h1 { text-align: center; font-size: 23px; margin: 10px 0 4px; }
+.subtitle {
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+  margin: 0 0 22px;
+}
+label { display: block; font-size: 13px; margin: 13px 0 6px; }
+input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  outline: none;
+}
+input:focus { border-color: var(--green); }
+button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  font: inherit;
+  font-weight: 750;
+  cursor: pointer;
+}
+.primary {
+  margin-top: 20px;
+  border: 0;
+  background: var(--green);
+  color: #071006;
+}
+.google {
+  margin-top: 10px;
+  border: 1px solid var(--border);
+  background: #171c18;
+  color: var(--text);
+}
+button:disabled { opacity: .6; cursor: wait; }
+.message {
+  display: none;
+  margin-top: 14px;
+  padding: 11px;
+  border-radius: 10px;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.message.show { display: block; }
+.message.error {
+  color: #ffb8b8;
+  background: #321818;
+  border: 1px solid #673030;
+}
+.message.ok {
+  color: #c7ffb8;
+  background: #172819;
+  border: 1px solid #315b30;
+}
+.bottom {
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 20px;
+}
+.back {
+  display: block;
+  text-align: center;
+  margin-top: 16px;
+  color: var(--muted);
+  font-size: 13px;
+}
+@media (max-width: 380px) {
+  .card { padding: 19px; }
+}
+</style>
+</head>
+
+<body>
+<main class="card">
+  <div class="brand">
+    <div class="logo">M</div>
+    <div>MOD<span>VERSE</span></div>
+  </div>
+
+  <h1>أنشئ حسابك</h1>
+  <p class="subtitle">انضم إلى عالم MODVERSE وابدأ اكتشاف الألعاب</p>
+
+  <form id="registerForm">
+    <label for="fullName">الاسم الكامل</label>
+    <input
+      id="fullName"
+      type="text"
+      autocomplete="name"
+      maxlength="100"
+      placeholder="اكتب اسمك الكامل"
+      required
+    >
+
+    <label for="username">اسم المستخدم</label>
+    <input
+      id="username"
+      type="text"
+      autocomplete="username"
+      minlength="3"
+      maxlength="20"
+      pattern="[A-Za-z0-9_]+"
+      title="استخدم الحروف الإنجليزية والأرقام والشرطة السفلية فقط"
+      placeholder="مثال: Ashraf_14"
+      required
+    >
+
+    <label for="email">البريد الإلكتروني</label>
+    <input
+      id="email"
+      type="email"
+      autocomplete="email"
+      maxlength="254"
+      placeholder="name@example.com"
+      required
+    >
+
+    <label for="password">كلمة المرور</label>
+    <input
+      id="password"
+      type="password"
+      autocomplete="new-password"
+      minlength="8"
+      maxlength="72"
+      placeholder="8 أحرف على الأقل"
+      required
+    >
+
+    <label for="confirmPassword">تأكيد كلمة المرور</label>
+    <input
+      id="confirmPassword"
+      type="password"
+      autocomplete="new-password"
+      minlength="8"
+      maxlength="72"
+      placeholder="اكتب كلمة المرور مرة أخرى"
+      required
+    >
+
+    <button class="primary" id="registerBtn" type="submit">
+      إنشاء الحساب
+    </button>
+  </form>
+
+  <button class="google" id="googleBtn" type="button">
+    التسجيل باستخدام Google
+  </button>
+
+  <div id="message" class="message" role="status" aria-live="polite"></div>
+
+  <p class="bottom">
+    عندك حساب بالفعل؟
+    <a href="login.html">تسجيل الدخول</a>
+  </p>
+
+  <a class="back" href="./">← الرجوع إلى الصفحة الرئيسية</a>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+"use strict";
+
+const SUPABASE_URL = "https://aboenvwqlzmbjyqisarb.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_-U554BTwIf6tP-DA9uRgCg_5w5_XtU3";
+
+const HOME_URL = new URL("./", window.location.href).href;
+const LOGIN_URL = new URL("login.html", window.location.href).href;
+
+const client = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY,
+  {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true
+    }
+  }
+);
+
+const form = document.getElementById("registerForm");
+const registerBtn = document.getElementById("registerBtn");
+const googleBtn = document.getElementById("googleBtn");
+const message = document.getElementById("message");
+
+function showMessage(text, type) {
+  message.textContent = text;
+  message.className = "message show " + type;
+}
+
+function setBusy(busy) {
+  registerBtn.disabled = busy;
+  googleBtn.disabled = busy;
+}
+
+function readableError(error) {
+  const text = String(error?.message || "").toLowerCase();
+
+  if (
+    text.includes("already registered") ||
+    text.includes("already exists") ||
+    text.includes("user already registered")
+  ) {
+    return "هذا البريد مسجل بالفعل. جرّب تسجيل الدخول.";
+  }
+
+  if (text.includes("invalid email")) {
+    return "البريد الإلكتروني غير صحيح.";
+  }
+
+  if (
+    text.includes("password") &&
+    (text.includes("weak") || text.includes("short"))
+  ) {
+    return "كلمة المرور ضعيفة. استخدم كلمة مرور أقوى.";
+  }
+
+  if (text.includes("rate limit") || text.includes("too many requests")) {
+    return "محاولات كثيرة. انتظر قليلًا ثم حاول مرة أخرى.";
+  }
+
+  return "حصل خطأ: " + (error?.message || "تعذّر إكمال العملية.");
+}
+
+async function checkExistingSession() {
+  try {
+    const { data, error } = await client.auth.getSession();
+
+    if (error) throw error;
+
+    if (data.session) {
+      window.location.replace(HOME_URL);
+    }
+  } catch (error) {
+    console.error("Session check failed:", error);
+  }
+}
+
+checkExistingSession();
+
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const fullName = document.getElementById("fullName").value.trim();
+  const username = document.getElementById("username").value.trim().toLowerCase();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  const confirmPassword = document.getElementById("confirmPassword").value;
+
+  if (fullName.length < 2) {
+    showMessage("اكتب اسمك الكامل بشكل صحيح.", "error");
+    return;
+  }
+
+  if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
+    showMessage(
+      "اسم المستخدم يجب أن يكون من 3 إلى 20 حرفًا، ويحتوي على حروف إنجليزية أو أرقام أو _ فقط.",
+      "error"
+    );
+    return;
+  }
+
+  if (password.length < 8) {
+    showMessage("كلمة المرور يجب أن تكون 8 أحرف على الأقل.", "error");
+    return;
+  }
+
+  if (new TextEncoder().encode(password).length > 72) {
+    showMessage("كلمة المرور طويلة جدًا. اختصرها إلى 72 بايت أو أقل.", "error");
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    showMessage("كلمتا المرور غير متطابقتين.", "error");
+    return;
+  }
+
+  setBusy(true);
+  showMessage("جارٍ إنشاء الحساب…", "ok");
+
+  try {
+    const { data, error } = await client.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: HOME_URL,
+        data: {
+          full_name: fullName,
+          username: username
+        }
+      }
+    });
+
+    if (error) throw error;
+
+    if (data.user && data.session) {
+      showMessage(
+        "تم إنشاء الحساب وتسجيل الدخول. جارٍ تحويلك للموقع…",
+        "ok"
+      );
+
+      window.location.replace(HOME_URL);
+      return;
+    }
+
+    if (data.user && !data.session) {
+      showMessage(
+        "تم إرسال طلب إنشاء الحساب. لو تأكيد البريد مفعّل، افتح رسالة Supabase واضغط رابط التأكيد، وبعدها سجّل الدخول.",
+        "ok"
+      );
+      form.reset();
+      return;
+    }
+
+    showMessage("لم نتأكد من إنشاء الحساب. حاول تسجيل الدخول للتحقق.", "error");
+
+  } catch (error) {
+    console.error("Registration failed:", error);
+    showMessage(readableError(error), "error");
+  } finally {
+    setBusy(false);
+  }
+});
+
+googleBtn.addEventListener("click", async () => {
+  setBusy(true);
+  showMessage("جارٍ فتح تسجيل الدخول باستخدام Google…", "ok");
+
+  try {
+    const { error } = await client.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: HOME_URL
+      }
+    });
+
+    if (error) throw error;
+
+  } catch (error) {
+    console.error("Google OAuth failed:", error);
+    showMessage(readableError(error), "error");
+    setBusy(false);
+  }
+});
+</script>
+</body>
+</html>
