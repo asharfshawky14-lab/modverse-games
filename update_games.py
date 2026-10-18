@@ -1,336 +1,423 @@
 
 import json
 import os
+import re
+import html
 import urllib.request
-import xml.etree.ElementTree as ET
+from html.parser import HTMLParser
+from urllib.parse import urljoin, urlparse
 from datetime import datetime, timezone
 
 DATABASE = "games.json"
-TIMEOUT = 40
+TIMEOUT = 25
+MAX_GAME_PAGES_PER_SOURCE = 60
+USER_AGENT = (
+    "Mozilla/5.0 (Linux; Android 12) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36"
+)
+
+EXCLUDED_PATH_PARTS = (
+    "/category/", "/tag/", "/author/", "/page/",
+    "/search", "/privacy", "/contact", "/about",
+    "/login", "/register", "/download-app"
+)
+
+DOWNLOAD_WORDS = (
+    "download", "تحميل", "تنزيل", "apk", "get it"
+)
+
+VERSION_RE = re.compile(
+    r"\b(?:version|ver\.?|الإصدار|نسخة)\s*[:\-]?\s*"
+    r"([0-9]+(?:\.[0-9A-Za-z]+){1,5})",
+    re.IGNORECASE
+)
+
+SIZE_RE = re.compile(
+    r"\b(\d+(?:\.\d+)?)\s*(KB|MB|GB)\b",
+    re.IGNORECASE
+)
+
+ANDROID_RE = re.compile(
+    r"(?:Android|أندرويد)\s*(\d+(?:\.\d+)?(?:\+|以上)?)",
+    re.IGNORECASE
+)
 
 
 def now_utc():
     return datetime.now(timezone.utc).isoformat()
 
 
-def load_json(path, default):
-    if not os.path.exists(path):
-        return default
-
-    with open(path, "r", encoding="utf-8") as file:
-        return json.load(file)
-
-
 def fetch_url(url):
     request = urllib.request.Request(
         url,
         headers={
-            "User-Agent": "MODVERSE-GameCatalog/2.0",
-            "Accept": "application/json, application/xml, text/xml"
+            "User-Agent": USER_AGENT,
+            "Accept": "text/html,application/xhtml+xml,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.8,ar;q=0.6"
         }
     )
-
     with urllib.request.urlopen(request, timeout=TIMEOUT) as response:
-        return response.read()
+        return response.read().decode("utf-8", errors="replace")
 
 
-def normalize_game(item, source_name):
-    if not isinstance(item, dict):
-        return None
+class PageParser(HTMLParser):
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.title = ""
+        self.title_depth = 0
+        self.meta = {}
+        self.anchors = []
+        self.current_anchor = None
+        self.text_parts = []
+        self.in_script_style = 0
 
-    title = (
-        item.get("title")
-        or item.get("name")
-        or item.get("app_name")
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        tag = tag.lower()
+
+        if tag in ("script", "style", "noscript"):
+            self.in_script_style += 1
+
+        if tag == "title":
+            self.title_depth += 1
+
+        if tag == "meta":
+            key = (
+                attrs.get("property")
+                or attrs.get("name")
+                or attrs.get("itemprop")
+                or ""
+            ).lower()
+            value = attrs.get("content", "").strip()
+            if key and value:
+                self.meta[key] = value
+
+        if tag == "a" and attrs.get("href"):
+            self.current_anchor = {
+                "href": attrs["href"].strip(),
+                "text": "",
+                "title": attrs.get("title", "").strip()
+            }
+
+        if tag == "img":
+            alt = attrs.get("alt", "").strip()
+            src = (
+                attrs.get("data-src")
+                or attrs.get("data-lazy-src")
+                or attrs.get("src")
+                or ""
+            ).strip()
+            if src:
+                self.meta.setdefault("images", [])
+                self.meta["images"].append({
+                    "src": src,
+                    "alt": alt
+                })
+
+    def handle_data(self, data):
+        if self.in_script_style:
+            return
+
+        value = data.strip()
+        if not value:
+            return
+
+        self.text_parts.append(value)
+
+        if self.title_depth:
+            self.title += " " + value
+
+        if self.current_anchor is not None:
+            self.current_anchor["text"] += " " + value
+
+    def handle_endtag(self, tag):
+        tag = tag.lower()
+
+        if tag in ("script", "style", "noscript") and self.in_script_style:
+            self.in_script_style -= 1
+
+        if tag == "title" and self.title_depth:
+            self.title_depth -= 1
+
+        if tag == "a" and self.current_anchor is not None:
+            self.current_anchor["text"] = clean_text(
+                self.current_anchor["text"]
+            )
+            self.anchors.append(self.current_anchor)
+            self.current_anchor = None
+
+
+def clean_text(value):
+    value = html.unescape(str(value or ""))
+    return re.sub(r"\s+", " ", value).strip()
+
+
+def same_site(url, base_url):
+    try:
+        return urlparse(url).netloc.lower() == urlparse(base_url).netloc.lower()
+    except Exception:
+        return False
+
+
+def is_probable_game_link(url, base_url, anchor_text=""):
+    parsed = urlparse(url)
+    path = parsed.path.lower()
+
+    if not same_site(url, base_url):
+        return False
+
+    if not path or path == "/":
+        return False
+
+    if any(part in path for part in EXCLUDED_PATH_PARTS):
+        return False
+
+    if any(path.endswith(ext) for ext in (
+        ".jpg", ".jpeg", ".png", ".webp", ".gif",
+        ".css", ".js", ".xml", ".pdf", ".zip", ".apk"
+    )):
+        return False
+
+    if any(word in path for word in (
+        "privacy-policy", "terms-of-use", "wp-content",
+        "wp-admin", "wp-json", "feed"
+    )):
+        return False
+
+    text = clean_text(anchor_text).lower()
+    if text in ("home", "next", "previous", "read more", "more"):
+        return False
+
+    return True
+
+
+def page_title(parser):
+    return clean_text(
+        parser.meta.get("og:title")
+        or parser.meta.get("twitter:title")
+        or parser.title
     )
 
-    link = (
-        item.get("url")
-        or item.get("link")
-        or item.get("download_url")
-        or item.get("homepage")
+
+def page_description(parser):
+    return clean_text(
+        parser.meta.get("description")
+        or parser.meta.get("og:description")
+        or parser.meta.get("twitter:description")
     )
 
-    if not title or not link:
-        return None
 
-    link = str(link).strip()
+def page_image(parser, base_url):
+    image = (
+        parser.meta.get("og:image")
+        or parser.meta.get("twitter:image")
+        or parser.meta.get("twitter:image:src")
+    )
+    if not image and parser.meta.get("images"):
+        for item in parser.meta["images"]:
+            if item.get("src"):
+                image = item["src"]
+                break
+    return urljoin(base_url, image) if image else ""
 
-    if not link.startswith("https://"):
-        return None
+
+def extract_details(parser, page_url):
+    title = page_title(parser)
+    description = page_description(parser)
+    full_text = clean_text(" ".join(parser.text_parts))
+
+    version = ""
+    size = ""
+    android = ""
+
+    match = VERSION_RE.search(title + " " + description + " " + full_text)
+    if match:
+        version = match.group(1)
+
+    match = SIZE_RE.search(description + " " + full_text)
+    if match:
+        size = match.group(0)
+
+    match = ANDROID_RE.search(description + " " + full_text)
+    if match:
+        android = match.group(1)
+
+    download_url = ""
+    for anchor in parser.anchors:
+        text = clean_text(
+            anchor.get("text", "") + " " + anchor.get("title", "")
+        ).lower()
+        href = urljoin(page_url, anchor.get("href", ""))
+
+        if href.startswith("https://") and any(
+            word in text for word in DOWNLOAD_WORDS
+        ):
+            download_url = href
+            break
 
     return {
-        "id": str(item.get("id") or link).strip(),
-        "title": str(title).strip(),
-        "description": str(
-            item.get("description")
-            or item.get("summary")
-            or ""
-        ).strip(),
-        "version": str(item.get("version", "")),
-        "image": str(
-            item.get("image")
-            or item.get("image_url")
-            or item.get("icon")
-            or ""
-        ),
-        "url": link,
-        "source": source_name,
-        "category": str(
-            item.get("category") or item.get("genre") or "ألعاب"
-        ),
-        "updated_at": now_utc()
+        "title": title,
+        "description": description,
+        "image": page_image(parser, page_url),
+        "version": version,
+        "size": size,
+        "android": android,
+        "download_url": download_url
     }
 
 
-def read_json_feed(data, source):
-    parsed = json.loads(data.decode("utf-8"))
-    path = source.get("items_path", "games")
+def read_html_source(source):
+    listing_url = source["url"]
+    source_name = source["name"]
 
-    if isinstance(parsed, list):
-        items = parsed
-    else:
-        items = parsed
+    listing_html = fetch_url(listing_url)
+    listing_parser = PageParser()
+    listing_parser.feed(listing_html)
 
-        for key in path.split("."):
-            if isinstance(items, dict):
-                items = items.get(key, [])
-            else:
-                items = []
-                break
+    base_host = urlparse(listing_url).netloc.lower()
+    game_urls = []
 
-    if not isinstance(items, list):
-        return []
+    for anchor in listing_parser.anchors:
+        url = urljoin(listing_url, anchor["href"])
+        if not url.startswith("https://"):
+            continue
+        if not is_probable_game_link(url, listing_url, anchor["text"]):
+            continue
+        if url not in game_urls:
+            game_urls.append(url)
 
+    # لو صفحة المصدر لم تعرض روابط ألعاب واضحة، لا نضيف بيانات مخمّنة.
     results = []
 
-    for item in items:
-        game = normalize_game(item, source["name"])
-        if game:
-            results.append(game)
+    for detail_url in game_urls[:MAX_GAME_PAGES_PER_SOURCE]:
+        try:
+            detail_html = fetch_url(detail_url)
+            parser = PageParser()
+            parser.feed(detail_html)
+            details = extract_details(parser, detail_url)
 
-    return results
+            title = details["title"]
+            if not title:
+                continue
 
+            # نستبعد الصفحات التي تبدو كتصنيفات أو صفحات عامة.
+            title_lower = title.lower()
+            if title_lower in (
+                "home", "happymod", "traidmod", "traid mod",
+                "games", "android games"
+            ):
+                continue
 
-def read_rss_feed(data, source):
-    root = ET.fromstring(data)
-    results = []
+            results.append({
+                "id": detail_url,
+                "title": title,
+                "name": title,
+                "description": details["description"],
+                "image": details["image"],
+                "version": details["version"],
+                "size": details["size"],
+                "android": details["android"],
+                "url": detail_url,
+                "detail_url": detail_url,
+                "download_url": details["download_url"] or detail_url,
+                "source": source_name,
+                "category": "ألعاب ومودات",
+                "versions": [
+                    {
+                        "version": details["version"],
+                        "size": details["size"],
+                        "android": details["android"],
+                        "url": details["download_url"] or detail_url
+                    }
+                ] if (
+                    details["version"]
+                    or details["size"]
+                    or details["android"]
+                    or details["download_url"]
+                ) else [],
+                "updated_at": now_utc()
+            })
 
-    for item in root.iter():
-        tag = item.tag.split("}")[-1].lower()
+        except Exception as error:
+            print(f"Could not read game page {detail_url}: {error}")
 
-        if tag not in ("item", "entry"):
-            continue
+    # إزالة التكرار باستخدام رابط صفحة اللعبة.
+    unique = {}
+    for game in results:
+        unique[game["url"]] = game
 
-        fields = {}
-
-        for child in item:
-            key = child.tag.split("}")[-1].lower()
-            value = (child.text or "").strip()
-
-            if key == "link":
-                value = child.attrib.get("href", value)
-
-            fields[key] = value
-
-        game = normalize_game({
-            "title": fields.get("title"),
-            "description": (
-                fields.get("description")
-                or fields.get("summary", "")
-            ),
-            "url": fields.get("link") or fields.get("id"),
-            "category": fields.get("category", "ألعاب")
-        }, source["name"])
-
-        if game:
-            results.append(game)
-
-    return results
-
-
-def read_fdroid_games(data, source):
-    parsed = json.loads(data.decode("utf-8"))
-    apps = parsed.get("apps", [])
-
-    if not isinstance(apps, list):
-        raise ValueError("F-Droid index has no valid apps list")
-
-    results = []
-
-    for app in apps:
-        if not isinstance(app, dict):
-            continue
-
-        categories = app.get("categories", [])
-
-        if isinstance(categories, str):
-            categories = [categories]
-
-        if not isinstance(categories, list):
-            continue
-
-        if not any(
-            str(category).strip().lower() == "games"
-            for category in categories
-        ):
-            continue
-
-        package_name = app.get("packageName", "")
-        if not package_name:
-            continue
-
-        localized = app.get("localized", {})
-        english = (
-            localized.get("en-US", {})
-            if isinstance(localized, dict)
-            else {}
-        )
-
-        title = (
-            app.get("name")
-            or english.get("name")
-            or package_name
-        )
-
-        description = (
-            app.get("summary")
-            or english.get("summary")
-            or ""
-        )
-
-        game = normalize_game({
-            "id": package_name,
-            "title": title,
-            "description": description,
-            "version": app.get("suggestedVersionName", ""),
-            "url": "https://f-droid.org/en/packages/"
-                   + package_name + "/",
-            "category": "ألعاب",
-            "image": ""
-        }, source.get("name", "F-Droid"))
-
-        if game:
-            results.append(game)
-
-    return results
-
-
-def read_fdroid_search(data, source):
-    parsed = json.loads(data.decode("utf-8"))
-    apps = parsed.get("apps", [])
-
-    if not isinstance(apps, list):
-        raise ValueError("F-Droid search response has no apps list")
-
-    results = []
-
-    for app in apps:
-        if not isinstance(app, dict):
-            continue
-
-        game = normalize_game({
-            "id": app.get("url", ""),
-            "title": app.get("name", ""),
-            "description": app.get("summary", ""),
-            "image": app.get("icon", ""),
-            "url": app.get("url", ""),
-            "category": "ألعاب"
-        }, source.get("name", "F-Droid Search"))
-
-        if game:
-            results.append(game)
-
-    return results
+    print(
+        f"{source_name}: found {len(game_urls)} links, "
+        f"collected {len(unique)} game pages"
+    )
+    return list(unique.values())
 
 
 def main():
-    database = load_json(
-        DATABASE,
-        {
-            "site": "MODVERSE",
-            "version": 2,
-            "sources": [],
-            "games": []
-        }
-    )
+    if not os.path.exists(DATABASE):
+        raise FileNotFoundError(
+            "games.json is missing. Database was not changed."
+        )
+
+    with open(DATABASE, "r", encoding="utf-8") as file:
+        database = json.load(file)
 
     sources = database.get("sources", [])
-    old_games = database.get("games", [])
+    if not isinstance(sources, list) or not sources:
+        raise RuntimeError(
+            "No configured sources. Database was not changed."
+        )
+
     collected = {}
-
-    for game in old_games:
-        if isinstance(game, dict) and game.get("url"):
-            collected[game["url"]] = game
-
     successful_sources = 0
-    newly_collected = 0
 
     for source in sources:
         name = source.get("name", "Unknown source")
+        source_type = str(source.get("type", "")).lower()
         url = source.get("url", "")
-        feed_type = source.get("type", "json").lower()
 
         if not url.startswith("https://"):
             print(f"Skipping non-HTTPS source: {name}")
             continue
 
         try:
-            data = fetch_url(url)
-
-            if feed_type == "rss":
-                games = read_rss_feed(data, source)
-            elif feed_type == "json":
-                games = read_json_feed(data, source)
-            elif feed_type == "fdroid":
-                games = read_fdroid_games(data, source)
-            elif feed_type == "fdroid_search":
-                games = read_fdroid_search(data, source)
+            if source_type in ("happymod_html", "traidmod_html"):
+                games = read_html_source(source)
             else:
-                print(f"Unsupported feed type: {feed_type}")
+                print(f"Unsupported source type: {source_type} ({name})")
                 continue
 
             successful_sources += 1
-            before = len(collected)
-
             for game in games:
                 collected[game["url"]] = game
-
-            added = len(collected) - before
-            newly_collected += added
-
-            print(
-                f"{name}: results={len(games)}, "
-                f"new_unique_entries={added}"
-            )
 
         except Exception as error:
             print(f"Source failed: {name}: {error}")
 
-    if sources and successful_sources == 0:
+    if successful_sources == 0:
         raise RuntimeError(
-            "All sources failed. Database was not changed."
+            "All configured sources failed. Database was not changed."
         )
 
     if not collected:
         raise RuntimeError(
-            "No games found. Database was not changed."
+            "Sources responded, but no game pages were collected. "
+            "Database was not changed."
         )
 
+    # استبدال الكتالوج القديم بنتائج المصادر الجديدة فقط.
     database["games"] = list(collected.values())
     database["last_checked"] = now_utc()
 
-    with open(DATABASE, "w", encoding="utf-8") as file:
-        json.dump(
-            database,
-            file,
-            ensure_ascii=False,
-            indent=2
-        )
+    temp_path = DATABASE + ".tmp"
+    with open(temp_path, "w", encoding="utf-8") as file:
+        json.dump(database, file, ensure_ascii=False, indent=2)
 
-    print("MODVERSE collection finished.")
-    print(f"New unique entries: {newly_collected}")
-    print(f"Total catalog entries: {len(collected)}")
+    os.replace(temp_path, DATABASE)
+
+    print("MODVERSE update completed.")
+    print(f"Sources configured: {len(sources)}")
+    print(f"Total games collected: {len(collected)}")
 
 
 if __name__ == "__main__":
