@@ -24,7 +24,10 @@ def load_json(path, default):
 def fetch_url(url):
     request = urllib.request.Request(
         url,
-        headers={"User-Agent": "MODVERSE-GameCatalog/1.1"}
+        headers={
+            "User-Agent": "MODVERSE-GameCatalog/2.0",
+            "Accept": "application/json, application/xml, text/xml"
+        }
     )
 
     with urllib.request.urlopen(request, timeout=TIMEOUT) as response:
@@ -51,11 +54,18 @@ def normalize_game(item, source_name):
     if not title or not link:
         return None
 
+    link = str(link).strip()
+
+    if not link.startswith("https://"):
+        return None
+
     return {
         "id": str(item.get("id") or link).strip(),
         "title": str(title).strip(),
         "description": str(
-            item.get("description", "")
+            item.get("description")
+            or item.get("summary")
+            or ""
         ).strip(),
         "version": str(item.get("version", "")),
         "image": str(
@@ -64,10 +74,10 @@ def normalize_game(item, source_name):
             or item.get("icon")
             or ""
         ),
-        "url": str(link).strip(),
+        "url": link,
         "source": source_name,
         "category": str(
-            item.get("category") or item.get("genre") or "أخرى"
+            item.get("category") or item.get("genre") or "ألعاب"
         ),
         "updated_at": now_utc()
     }
@@ -92,14 +102,14 @@ def read_json_feed(data, source):
     if not isinstance(items, list):
         return []
 
-    result = []
+    results = []
 
     for item in items:
         game = normalize_game(item, source["name"])
         if game:
-            result.append(game)
+            results.append(game)
 
-    return result
+    return results
 
 
 def read_rss_feed(data, source):
@@ -130,7 +140,7 @@ def read_rss_feed(data, source):
                 or fields.get("summary", "")
             ),
             "url": fields.get("link") or fields.get("id"),
-            "category": fields.get("category", "أخرى")
+            "category": fields.get("category", "ألعاب")
         }, source["name"])
 
         if game:
@@ -140,10 +150,6 @@ def read_rss_feed(data, source):
 
 
 def read_fdroid_games(data, source):
-    """
-    Read the official F-Droid index-v1 JSON.
-    Only include apps explicitly categorized as Games.
-    """
     parsed = json.loads(data.decode("utf-8"))
     apps = parsed.get("apps", [])
 
@@ -159,10 +165,7 @@ def read_fdroid_games(data, source):
         categories = app.get("categories", [])
 
         if isinstance(categories, str):
-            categories = [
-                value.strip()
-                for value in categories.split(",")
-            ]
+            categories = [categories]
 
         if not isinstance(categories, list):
             continue
@@ -178,27 +181,21 @@ def read_fdroid_games(data, source):
             continue
 
         localized = app.get("localized", {})
-        english = localized.get("en-US", {}) if isinstance(
-            localized, dict
-        ) else {}
+        english = (
+            localized.get("en-US", {})
+            if isinstance(localized, dict)
+            else {}
+        )
 
         title = (
             app.get("name")
             or english.get("name")
-            or english.get("title")
             or package_name
         )
 
         description = (
             app.get("summary")
-            or english.get("short_description")
             or english.get("summary")
-            or ""
-        )
-
-        version = (
-            app.get("suggestedVersionName")
-            or app.get("marketversion")
             or ""
         )
 
@@ -206,12 +203,40 @@ def read_fdroid_games(data, source):
             "id": package_name,
             "title": title,
             "description": description,
-            "version": version,
-            "url": "https://f-droid.org/packages/"
+            "version": app.get("suggestedVersionName", ""),
+            "url": "https://f-droid.org/en/packages/"
                    + package_name + "/",
             "category": "ألعاب",
             "image": ""
         }, source.get("name", "F-Droid"))
+
+        if game:
+            results.append(game)
+
+    return results
+
+
+def read_fdroid_search(data, source):
+    parsed = json.loads(data.decode("utf-8"))
+    apps = parsed.get("apps", [])
+
+    if not isinstance(apps, list):
+        raise ValueError("F-Droid search response has no apps list")
+
+    results = []
+
+    for app in apps:
+        if not isinstance(app, dict):
+            continue
+
+        game = normalize_game({
+            "id": app.get("url", ""),
+            "title": app.get("name", ""),
+            "description": app.get("summary", ""),
+            "image": app.get("icon", ""),
+            "url": app.get("url", ""),
+            "category": "ألعاب"
+        }, source.get("name", "F-Droid Search"))
 
         if game:
             results.append(game)
@@ -224,7 +249,7 @@ def main():
         DATABASE,
         {
             "site": "MODVERSE",
-            "version": 1,
+            "version": 2,
             "sources": [],
             "games": []
         }
@@ -239,6 +264,7 @@ def main():
             collected[game["url"]] = game
 
     successful_sources = 0
+    newly_collected = 0
 
     for source in sources:
         name = source.get("name", "Unknown source")
@@ -258,23 +284,37 @@ def main():
                 games = read_json_feed(data, source)
             elif feed_type == "fdroid":
                 games = read_fdroid_games(data, source)
+            elif feed_type == "fdroid_search":
+                games = read_fdroid_search(data, source)
             else:
                 print(f"Unsupported feed type: {feed_type}")
                 continue
 
             successful_sources += 1
+            before = len(collected)
 
             for game in games:
                 collected[game["url"]] = game
 
-            print(f"{name}: collected {len(games)} games")
+            added = len(collected) - before
+            newly_collected += added
+
+            print(
+                f"{name}: results={len(games)}, "
+                f"new_unique_entries={added}"
+            )
 
         except Exception as error:
             print(f"Source failed: {name}: {error}")
 
     if sources and successful_sources == 0:
         raise RuntimeError(
-            "All sources failed. Keeping games.json unchanged."
+            "All sources failed. Database was not changed."
+        )
+
+    if not collected:
+        raise RuntimeError(
+            "No games found. Database was not changed."
         )
 
     database["games"] = list(collected.values())
@@ -289,6 +329,7 @@ def main():
         )
 
     print("MODVERSE collection finished.")
+    print(f"New unique entries: {newly_collected}")
     print(f"Total catalog entries: {len(collected)}")
 
 
