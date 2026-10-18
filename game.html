@@ -1,0 +1,352 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#090b0a">
+<meta name="description" content="تفاصيل ألعاب أندرويد على MODVERSE">
+<title>تفاصيل اللعبة | MODVERSE</title>
+
+<style>
+:root{
+  --bg:#090b0a;
+  --panel:#111512;
+  --green:#8cff65;
+  --text:#f2f5f2;
+  --muted:#9ca79e;
+  --border:#242d26;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+  line-height:1.8;
+}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer}
+.container{width:min(1000px,92%);margin:auto}
+header{
+  border-bottom:1px solid var(--border);
+  background:#090b0af5;
+}
+.nav{
+  min-height:72px;display:flex;align-items:center;
+  justify-content:space-between;gap:15px;
+}
+.brand{font-size:23px;font-weight:950;direction:ltr}
+.brand span{color:var(--green)}
+.back{
+  color:var(--green);font-size:13px;font-weight:750;
+}
+main{padding:30px 0 60px}
+.status{
+  padding:22px;border:1px solid var(--border);
+  background:var(--panel);border-radius:15px;
+  color:var(--muted);text-align:center;
+}
+.details{
+  display:none;
+}
+.hero{
+  display:grid;grid-template-columns:280px 1fr;
+  gap:28px;align-items:start;
+}
+.cover{
+  width:100%;aspect-ratio:1/1;position:relative;
+  overflow:hidden;border-radius:18px;
+  border:1px solid var(--border);
+  background:linear-gradient(145deg,#24472b,#101b15);
+  display:grid;place-items:center;
+}
+.cover img{
+  width:100%;height:100%;object-fit:cover;
+}
+.cover .fallback{font-size:85px}
+.tag{
+  display:inline-block;border:1px solid #345332;
+  background:#132016;color:var(--green);
+  padding:4px 10px;border-radius:20px;font-size:12px;
+}
+h1{font-size:clamp(25px,4vw,38px);line-height:1.4;margin:12px 0}
+.description{color:var(--muted);white-space:pre-line}
+.meta{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;margin:22px 0;
+}
+.meta-item{
+  padding:13px;border:1px solid var(--border);
+  border-radius:12px;background:var(--panel);
+  overflow-wrap:anywhere;
+}
+.meta-item span{
+  display:block;color:var(--muted);font-size:12px;
+}
+.meta-item strong{display:block;margin-top:3px;font-size:14px}
+.actions{display:grid;gap:10px;margin-top:20px}
+.action{
+  display:block;width:100%;text-align:center;
+  padding:13px 16px;border-radius:11px;
+  font-weight:850;border:1px solid var(--border);
+}
+.action.primary{
+  color:#091007;background:var(--green);border-color:var(--green);
+}
+.action.secondary{color:var(--green);background:var(--panel)}
+.action.disabled{opacity:.55;cursor:not-allowed}
+.safety{
+  margin-top:18px;padding:14px;border-radius:12px;
+  border:1px solid #66552a;background:#211d11;
+  color:#e7d5a5;font-size:12px;
+}
+.source{
+  color:var(--muted);font-size:12px;margin-top:14px;
+  overflow-wrap:anywhere;
+}
+.source a{color:var(--green);text-decoration:underline}
+@media(max-width:680px){
+  .hero{grid-template-columns:1fr;gap:20px}
+  .cover{max-width:250px;margin:auto}
+  .meta{gap:8px}
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="container nav">
+    <a class="brand" href="./">MOD<span>VERSE</span></a>
+    <a class="back" href="./">← الرجوع للألعاب</a>
+  </div>
+</header>
+
+<main class="container">
+  <div id="status" class="status">⏳ جارٍ تحميل تفاصيل اللعبة...</div>
+
+  <article id="details" class="details">
+    <div class="hero">
+      <div class="cover" id="cover">
+        <span class="fallback" id="fallback">🎮</span>
+      </div>
+
+      <div>
+        <span class="tag" id="category">ألعاب أندرويد</span>
+        <h1 id="title">اسم اللعبة</h1>
+        <p class="description" id="description"></p>
+
+        <div class="meta">
+          <div class="meta-item">
+            <span>الإصدار</span>
+            <strong id="version">غير محدد</strong>
+          </div>
+          <div class="meta-item">
+            <span>حجم الملف</span>
+            <strong id="size">غير محدد</strong>
+          </div>
+          <div class="meta-item">
+            <span>إصدار أندرويد المطلوب</span>
+            <strong id="android">غير محدد</strong>
+          </div>
+          <div class="meta-item">
+            <span>مصدر اللعبة</span>
+            <strong id="source">غير محدد</strong>
+          </div>
+        </div>
+
+        <div class="actions" id="actions"></div>
+
+        <div class="safety">
+          تنبيه: راجع مصدر ملف APK وأذوناته قبل التثبيت.
+          المعلومات المعروضة مأخوذة من بيانات المصدر، ولا تعني
+          أن الملف تم فحصه أمنيًا أو ضمان خلوه من المخاطر.
+        </div>
+
+        <p class="source" id="sourceInfo"></p>
+      </div>
+    </div>
+  </article>
+</main>
+
+<script>
+"use strict";
+
+const statusBox = document.getElementById("status");
+const detailsBox = document.getElementById("details");
+const actionsBox = document.getElementById("actions");
+
+function safeURL(value){
+  try{
+    const url = new URL(String(value || ""));
+    return ["https:", "http:"].includes(url.protocol)
+      ? url.href
+      : "";
+  }catch{
+    return "";
+  }
+}
+
+function setText(id, value, fallback = "غير محدد"){
+  const element = document.getElementById(id);
+  element.textContent = String(value || fallback);
+}
+
+function makeLink(label, url, className){
+  const link = document.createElement("a");
+  link.className = "action " + className;
+  link.textContent = label;
+  link.href = url;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  return link;
+}
+
+function showError(message){
+  statusBox.textContent = message;
+  statusBox.style.display = "block";
+  detailsBox.style.display = "none";
+}
+
+function renderGame(game){
+  setText("title", game.title || game.name, "لعبة بدون اسم");
+  setText("description", game.description, "لا يوجد وصف متاح لهذه اللعبة.");
+  setText("category", game.category, "ألعاب أندرويد");
+  setText("version", game.version);
+  setText("size", game.size);
+  setText("android", game.android);
+  setText("source", game.source);
+
+  document.title =
+    (game.title || game.name || "تفاصيل اللعبة") + " | MODVERSE";
+
+  const imageURL = safeURL(game.image || game.thumbnail || game.cover);
+  const cover = document.getElementById("cover");
+  const fallback = document.getElementById("fallback");
+
+  if(imageURL){
+    const image = document.createElement("img");
+    image.src = imageURL;
+    image.alt = game.title || game.name || "غلاف اللعبة";
+    image.loading = "eager";
+
+    image.addEventListener("error", () => {
+      image.remove();
+      fallback.hidden = false;
+    });
+
+    fallback.hidden = true;
+    cover.insertBefore(image, fallback);
+  }
+
+  actionsBox.replaceChildren();
+
+  const downloadURL = safeURL(game.download_url);
+  const sourceURL = safeURL(game.detail_url || game.url);
+
+  let isDirectAPK = false;
+
+  if(downloadURL){
+    try{
+      isDirectAPK =
+        new URL(downloadURL).pathname.toLowerCase().endsWith(".apk");
+    }catch{
+      isDirectAPK = false;
+    }
+  }
+
+  // لا نعتبر الرابط مباشرًا إلا إذا كان رابط APK واضحًا
+  // أو كانت قاعدة البيانات تحدد نوعه صراحةً.
+  isDirectAPK = isDirectAPK || game.download_type === "direct";
+
+  if(isDirectAPK && downloadURL){
+    actionsBox.appendChild(
+      makeLink("⬇ تحميل ملف APK", downloadURL, "primary")
+    );
+  }else if(sourceURL){
+    actionsBox.appendChild(
+      makeLink("فتح صفحة اللعبة في المصدر ↗", sourceURL, "primary")
+    );
+
+    const note = document.createElement("p");
+    note.className = "description";
+    note.textContent =
+      "رابط ملف APK المباشر غير متحقق منه حتى الآن. " +
+      "استخدم صفحة المصدر للوصول إلى خيار التنزيل.";
+    actionsBox.appendChild(note);
+  }else{
+    const unavailable = document.createElement("div");
+    unavailable.className = "action disabled";
+    unavailable.textContent = "رابط التحميل غير متوفر";
+    actionsBox.appendChild(unavailable);
+  }
+
+  const sourceInfo = document.getElementById("sourceInfo");
+  sourceInfo.replaceChildren();
+
+  if(sourceURL){
+    sourceInfo.append("صفحة المصدر: ");
+    sourceInfo.appendChild(
+      makeInlineLink(sourceURL, game.source || "فتح المصدر")
+    );
+  }else{
+    sourceInfo.textContent = "لم يتم توفير رابط للمصدر.";
+  }
+
+  statusBox.style.display = "none";
+  detailsBox.style.display = "block";
+}
+
+function makeInlineLink(url, label){
+  const link = document.createElement("a");
+  link.href = url;
+  link.textContent = label;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  return link;
+}
+
+async function loadGame(){
+  const requestedId = new URLSearchParams(location.search).get("id");
+
+  if(!requestedId){
+    showError("لم يتم تحديد لعبة. ارجع إلى الصفحة الرئيسية واختر لعبة.");
+    return;
+  }
+
+  try{
+    const response = await fetch("./games.json?v=" + Date.now(), {
+      cache: "no-store"
+    });
+
+    if(!response.ok){
+      throw new Error("تعذر تحميل قاعدة بيانات الألعاب.");
+    }
+
+    const data = await response.json();
+
+    if(!Array.isArray(data.games)){
+      throw new Error("ملف الألعاب يحتوي على بيانات غير صحيحة.");
+    }
+
+    const game = data.games.find(item =>
+      item &&
+      (String(item.id || "") === requestedId ||
+       String(item.url || "") === requestedId ||
+       String(item.detail_url || "") === requestedId)
+    );
+
+    if(!game){
+      showError("لم نعثر على اللعبة المطلوبة. ارجع إلى الصفحة الرئيسية.");
+      return;
+    }
+
+    renderGame(game);
+  }catch(error){
+    console.error("MODVERSE details error:", error);
+    showError("تعذر تحميل تفاصيل اللعبة. حاول تحديث الصفحة لاحقًا.");
+  }
+}
+
+loadGame();
+</script>
+</body>
+</html>
