@@ -673,7 +673,7 @@ def merge_game(old_game, new_game):
 
 
 def check_existing_versions(games, start_index):
-    """Prioritize missing game images, then rotate version checks."""
+    """Rotate fairly between games missing images and regular games."""
     if not games:
         return games, start_index
 
@@ -686,6 +686,96 @@ def check_existing_versions(games, start_index):
         "spinner",
         "default-image",
     )
+
+    def needs_image(game):
+        image = str(game.get("image") or "").strip().lower()
+        return (
+            not image
+            or any(marker in image for marker in placeholders)
+        )
+
+    total = len(games)
+    count = min(MAX_VERSION_CHECKS_PER_RUN, total)
+    start_index = start_index % total
+
+    # Rotate both groups so the same games are not always first.
+    circular_order = [
+        (start_index + offset) % total
+        for offset in range(total)
+    ]
+
+    missing_images = [
+        i for i in circular_order if needs_image(games[i])
+    ]
+    regular_indices = [
+        i for i in circular_order if not needs_image(games[i])
+    ]
+
+    # Alternate between missing-image games and regular version checks.
+    indices = []
+    missing_pos = 0
+    regular_pos = 0
+    take_missing = bool(missing_images)
+
+    while len(indices) < count:
+        if take_missing and missing_pos < len(missing_images):
+            indices.append(missing_images[missing_pos])
+            missing_pos += 1
+        elif regular_pos < len(regular_indices):
+            indices.append(regular_indices[regular_pos])
+            regular_pos += 1
+        elif missing_pos < len(missing_images):
+            indices.append(missing_images[missing_pos])
+            missing_pos += 1
+        else:
+            break
+
+        take_missing = not take_missing
+
+    for index in indices:
+        game = games[index]
+        url = (
+            game.get("detail_url")
+            or game.get("url")
+            or game.get("id")
+            or ""
+        )
+
+        if not isinstance(url, str) or not url.startswith("https://"):
+            continue
+
+        try:
+            page_html, final_url = fetch_url(url)
+            parser = PageParser()
+            parser.feed(page_html)
+
+            refreshed = extract_game(
+                parser,
+                final_url,
+                game.get("source", "Unknown source"),
+            )
+
+            if refreshed:
+                games[index] = merge_game(game, refreshed)
+                print(
+                    "GAME CHECKED:",
+                    games[index].get("title", ""),
+                    "image refreshed:",
+                    not needs_image(games[index]),
+                )
+
+        except Exception as error:
+            print(
+                "Game check failed for",
+                game.get("title", url),
+                ":",
+                error,
+            )
+
+        time.sleep(DELAY_SECONDS)
+
+    next_cursor = (start_index + count) % total
+    return games, next_cursor
 
     def needs_image(game):
         image = str(game.get("image") or "").strip().lower()
