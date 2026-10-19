@@ -3,13 +3,12 @@
   "version": 3,
   "description": "Android games and mods catalog",
   "sources": [
-    "sources": [
-  {
-    "name": "HappyMod Games",
-    "type": "happymod_html",
-    "url": "https://www.happymod.to/"
-  }
-],
+      "sources": [
+    {
+      "name": "HappyMod Games",
+      "type": "happymod_html",
+      "url": "https://www.happymod.to/"
+    }
   ],
   "games": [
     {
