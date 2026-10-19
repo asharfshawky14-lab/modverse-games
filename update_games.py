@@ -184,13 +184,28 @@ class PageParser(HTMLParser):
                 "title": attrs.get("title", "").strip(),
             }
 
-        if tag == "img":
+        if tag in ("img", "source"):
             src = (
                 attrs.get("data-src")
                 or attrs.get("data-lazy-src")
+                or attrs.get("data-original")
+                or attrs.get("data-original-src")
+                or attrs.get("data-lazy")
+                or attrs.get("data-echo")
                 or attrs.get("src")
                 or ""
             ).strip()
+
+            if not src:
+                srcset = (
+                    attrs.get("data-srcset")
+                    or attrs.get("data-lazy-srcset")
+                    or attrs.get("srcset")
+                    or ""
+                ).strip()
+
+                if srcset:
+                    src = srcset.split(",")[0].strip().split(" ")[0]
 
             if src:
                 self.images.append({
