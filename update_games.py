@@ -764,6 +764,28 @@ def main():
             }
 
     games = list(merged_games.values())
+        games = [
+        game for game in games
+        if "/faq/" not in str(
+            game.get("detail_url") or game.get("url") or game.get("id") or ""
+        ).lower()
+        and not any(
+            name in clean_text(
+                game.get("title") or game.get("name") or game.get("game_name") or ""
+            ).lower()
+            for name in (
+                "winlator",
+                "capcut",
+                "fl studio mobile",
+            )
+        )
+        and not any(
+            word in clean_text(
+                game.get("title") or game.get("name") or game.get("game_name") or ""
+            ).lower()
+            for word in ARTICLE_WORDS
+        )
+        ]
 
     cursor = database.get("version_check_cursor", 0)
     try:
