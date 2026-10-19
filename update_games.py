@@ -253,14 +253,27 @@ def is_same_site(url, base_url):
     return normalized_host(url) == normalized_host(base_url)
 
 
+
 def is_blocked_url(url):
     parsed = urlparse(url)
-    path = parsed.path.lower()
+    path = parsed.path.lower().rstrip("/")
 
     if parsed.scheme not in ("https", "http"):
         return True
 
     if any(part in path for part in BLOCKED_PATH_PARTS):
+        return True
+
+    # استبعاد صفحات أقسام الألعاب مثل /games/action
+    if re.fullmatch(r"/games/[^/]+", path):
+        return True
+
+    # استبعاد صفحات التنقل العامة وليست ألعابًا
+    if path in (
+        "/game-mod.html",
+        "/app-mod.html",
+        "/new-mod.html",
+    ):
         return True
 
     if path.endswith((
