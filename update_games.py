@@ -25,9 +25,10 @@ USER_AGENT = (
 )
 
 VERSION_RE = re.compile(
-    r"\b(?:version|ver\.?|الإصدار|نسخة)\s*[:-]?\s*"
+    r"\b(?:version|ver\.?|v|الإصدار|نسخة)\s*[:-]?\s*"
     r"([0-9]+(?:\.[0-9A-Za-z]+){1,5})",
     re.IGNORECASE,
+)
 )
 SIZE_RE = re.compile(r"\b(\d+(?:\.\d+)?)\s*(KB|MB|GB)\b", re.I)
 ANDROID_RE = re.compile(
