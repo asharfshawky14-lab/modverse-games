@@ -609,42 +609,48 @@ def game_key(game):
 
 
 def merge_game(old_game, new_game):
-    """Update fields without wiping previously saved information."""
+    """Update game fields without losing saved information."""
     merged = dict(old_game)
 
-    old_version = str(old_game.get("version") or "").strip()
-    new_version = str(new_game.get("version") or "").strip()
-
-    old_versions = old_game.get("versions", [])
-    if not isinstance(old_versions, list):
-        old_versions = []
-
-    history = list(old_versions)
-
-    if old_version and not any(
-        isinstance(item, dict) and item.get("version") == old_version
-        for item in history
-    ):
-        history.append({
-            "version": old_version,
-            "recorded_at": old_game.get("updated_at") or now_utc(),
-        })
-
-    if new_version and new_version != old_version:
-        history.append({
-            "version": new_version,
-            "recorded_at": now_utc(),
-        })
-
     for key, value in new_game.items():
-        if value not in ("", None, [], {}):
-            merged[key] = value
-        elif key not in merged:
-            merged[key] = value
+        if value is None or value == "":
+            continue
 
-    merged["versions"] = history
-    merged["id"] = merged.get("id") or game_key(merged)
-    merged["updated_at"] = now_utc()
+        if key == "image":
+            old_image = str(merged.get("image") or "").strip()
+            new_image = str(value).strip()
+
+            placeholders = (
+                "grey.gif",
+                "placeholder",
+                "no-image",
+                "no_image",
+                "loading",
+                "spinner",
+                "default-image",
+            )
+
+            old_is_placeholder = any(
+                marker in old_image.lower()
+                for marker in placeholders
+            )
+
+            new_is_placeholder = any(
+                marker in new_image.lower()
+                for marker in placeholders
+            )
+
+            if new_is_placeholder:
+                continue
+
+            if old_is_placeholder or not old_image:
+                merged[key] = new_image
+            else:
+                merged[key] = new_image
+
+            continue
+
+        merged[key] = value
 
     return merged
 
