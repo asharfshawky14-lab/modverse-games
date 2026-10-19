@@ -763,8 +763,9 @@ def main():
                 "checked_at": now_utc(),
             }
 
-    games = list(merged_games.values())
-        games = [
+        games = list(merged_games.values())
+
+    games = [
         game for game in games
         if "/faq/" not in str(
             game.get("detail_url") or game.get("url") or game.get("id") or ""
@@ -785,7 +786,7 @@ def main():
             ).lower()
             for word in ARTICLE_WORDS
         )
-        ]
+    ]
 
     cursor = database.get("version_check_cursor", 0)
     try:
