@@ -645,7 +645,7 @@ def main():
     # Preserve existing entries from every configured source.
     # Do not discard a game's saved record just because its source
     # is not HappyMod.
-        cleaned_old_games = []
+    cleaned_old_games = []
 
     for game in old_games:
         if not isinstance(game, dict):
