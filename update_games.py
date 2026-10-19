@@ -251,10 +251,11 @@ def get_description(parser):
 def get_image(parser, page_url):
     candidates = [
         parser.meta.get("og:image", ""),
+        parser.meta.get("og:image:url", ""),
         parser.meta.get("twitter:image", ""),
         parser.meta.get("twitter:image:src", ""),
-        parser.meta.get("og:image:url", ""),
     ]
+
     candidates.extend(item["src"] for item in parser.images)
 
     for candidate in candidates:
@@ -270,12 +271,21 @@ def get_image(parser, page_url):
         filename = parsed.path.lower().rsplit("/", 1)[-1]
 
         if any(word in filename for word in (
-            "logo", "favicon", "placeholder", "default-avatar"
+            "logo",
+            "favicon",
+            "placeholder",
+            "default-avatar",
+            "grey.gif",
         )):
             continue
 
         if filename.endswith((
-            ".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"
+            ".jpg",
+            ".jpeg",
+            ".png",
+            ".webp",
+            ".gif",
+            ".avif",
         )):
             return image_url
 
