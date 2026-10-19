@@ -645,7 +645,7 @@ def main():
     # Preserve existing entries from every configured source.
     # Do not discard a game's saved record just because its source
     # is not HappyMod.
-    cleaned_old_games = []
+        cleaned_old_games = []
 
     for game in old_games:
         if not isinstance(game, dict):
@@ -658,6 +658,17 @@ def main():
             or game.get("id")
             or ""
         )
+
+        # Remove old help articles and guides, but preserve game records.
+        saved_title = clean_text(
+            game.get("title")
+            or game.get("name")
+            or game.get("game_name")
+            or ""
+        ).lower()
+
+        if any(word in saved_title for word in ARTICLE_WORDS):
+            continue
 
         if isinstance(game_url, str) and game_url.startswith(
             ("https://", "http://")
