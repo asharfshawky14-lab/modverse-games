@@ -656,15 +656,46 @@ def merge_game(old_game, new_game):
 
 
 def check_existing_versions(games, start_index):
-    """Check a rotating batch of old game pages each run."""
+    """Prioritize missing game images, then rotate version checks."""
     if not games:
         return games, start_index
 
-    count = min(MAX_VERSION_CHECKS_PER_RUN, len(games))
-    checked = 0
-    index = start_index % len(games)
+    placeholders = (
+        "grey.gif",
+        "placeholder",
+        "no-image",
+        "no_image",
+        "loading",
+        "spinner",
+        "default-image",
+    )
 
-    while checked < count:
+    def needs_image(game):
+        image = str(game.get("image") or "").strip().lower()
+        return (
+            not image
+            or any(marker in image for marker in placeholders)
+        )
+
+    count = min(MAX_VERSION_CHECKS_PER_RUN, len(games))
+    start_index = start_index % len(games)
+
+    # Check games with missing images first.
+    missing_images = [
+        i for i, game in enumerate(games)
+        if needs_image(game)
+    ]
+
+    # Then continue rotating through the rest of the catalog.
+    regular_indices = [
+        (start_index + offset) % len(games)
+        for offset in range(len(games))
+        if (start_index + offset) % len(games) not in missing_images
+    ]
+
+    indices = (missing_images + regular_indices)[:count]
+
+    for index in indices:
         game = games[index]
         url = (
             game.get("detail_url")
@@ -673,38 +704,41 @@ def check_existing_versions(games, start_index):
             or ""
         )
 
-        if isinstance(url, str) and url.startswith("https://"):
-            try:
-                page_html, final_url = fetch_url(url)
-                parser = PageParser()
-                parser.feed(page_html)
+        if not isinstance(url, str) or not url.startswith("https://"):
+            continue
 
-                refreshed = extract_game(
-                    parser, final_url,
-                    game.get("source", "Unknown source"),
-                )
+        try:
+            page_html, final_url = fetch_url(url)
+            parser = PageParser()
+            parser.feed(page_html)
 
-                if refreshed:
-                    games[index] = merge_game(game, refreshed)
-                    print(
-                        "VERSION CHECKED:",
-                        games[index].get("title", ""),
-                        games[index].get("version", "unknown"),
-                    )
+            refreshed = extract_game(
+                parser,
+                final_url,
+                game.get("source", "Unknown source"),
+            )
 
-            except Exception as error:
+            if refreshed:
+                games[index] = merge_game(game, refreshed)
                 print(
-                    "Version check failed for",
-                    game.get("title", url), ":", error,
+                    "GAME CHECKED:",
+                    games[index].get("title", ""),
+                    "image refreshed:",
+                    not needs_image(games[index]),
                 )
 
-            time.sleep(DELAY_SECONDS)
+        except Exception as error:
+            print(
+                "Game check failed for",
+                game.get("title", url),
+                ":",
+                error,
+            )
 
-        checked += 1
-        index = (index + 1) % len(games)
+        time.sleep(DELAY_SECONDS)
 
-    return games, index
-
+    next_cursor = (start_index + count) % len(games)
+    return games, next_cursor
 
 def main():
     if not os.path.exists(DATABASE):
