@@ -763,7 +763,7 @@ def main():
                 "checked_at": now_utc(),
             }
 
-        games = list(merged_games.values())
+    games = list(merged_games.values())
 
     games = [
         game for game in games
