@@ -598,16 +598,15 @@ def main():
             "games.json is missing; existing data was not changed."
         )
 
-    with open(DATABASE, "r", encoding="utf-8") as file:
+        with open(DATABASE, "r", encoding="utf-8") as file:
         database = json.load(file)
 
-        if not isinstance(database, dict):
+    if not isinstance(database, dict):
         raise ValueError("games.json must contain a JSON object.")
 
     old_games = database.get("games", [])
     if not isinstance(old_games, list):
         old_games = []
-
     # Keep only saved HappyMod games.
     old_games = [
         game for game in old_games
