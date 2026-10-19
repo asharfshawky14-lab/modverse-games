@@ -1562,8 +1562,13 @@
       "download_url": "https://happymod.to/jelly-run-2048-mod/com.goolny.Split2048",
       "source": "HappyMod Games",
       "category": "ألعاب أندرويد",
-      "versions": [],
-      "updated_at": "2026-10-19T14:49:11.000939+00:00"
+      "versions": [
+        {
+          "version": "1.71.4",
+          "recorded_at": "2026-10-19T14:49:11.000939+00:00"
+        }
+      ],
+      "updated_at": "2026-10-19T17:23:45.859350+00:00"
     },
     {
       "id": "https://happymod.to/city-of-survivors-mod/com.bibiboom.settlementheroes",
@@ -1579,8 +1584,13 @@
       "download_url": "https://happymod.to/city-of-survivors-mod/com.bibiboom.settlementheroes",
       "source": "HappyMod Games",
       "category": "ألعاب أندرويد",
-      "versions": [],
-      "updated_at": "2026-10-19T14:49:11.880255+00:00"
+      "versions": [
+        {
+          "version": "1.0.441",
+          "recorded_at": "2026-10-19T14:49:11.880255+00:00"
+        }
+      ],
+      "updated_at": "2026-10-19T17:23:46.897334+00:00"
     },
     {
       "id": "https://happymod.to/bus-simulator-bus-games-2022-mod/com.smg.bussimulator.eurobus.games",
@@ -1596,8 +1606,13 @@
       "download_url": "https://happymod.to/bus-simulator-bus-games-2022-mod/com.smg.bussimulator.eurobus.games",
       "source": "HappyMod Games",
       "category": "ألعاب أندرويد",
-      "versions": [],
-      "updated_at": "2026-10-19T14:49:12.727114+00:00"
+      "versions": [
+        {
+          "version": "5.4",
+          "recorded_at": "2026-10-19T14:49:12.727114+00:00"
+        }
+      ],
+      "updated_at": "2026-10-19T17:23:47.927724+00:00"
     },
     {
       "id": "https://happymod.to/scale-the-depths-mod/com.LionRabbit.ScaletheDepths",
@@ -1613,8 +1628,13 @@
       "download_url": "https://happymod.to/scale-the-depths-mod/com.LionRabbit.ScaletheDepths",
       "source": "HappyMod Games",
       "category": "ألعاب أندرويد",
-      "versions": [],
-      "updated_at": "2026-10-19T14:49:13.591257+00:00"
+      "versions": [
+        {
+          "version": "2.6",
+          "recorded_at": "2026-10-19T14:49:13.591257+00:00"
+        }
+      ],
+      "updated_at": "2026-10-19T17:23:48.874308+00:00"
     },
     {
       "id": "https://happymod.to/frost-world-mod/com.winter.breaker",
@@ -1630,8 +1650,13 @@
       "download_url": "https://happymod.to/frost-world-mod/com.winter.breaker",
       "source": "HappyMod Games",
       "category": "ألعاب أندرويد",
-      "versions": [],
-      "updated_at": "2026-10-19T14:49:14.556671+00:00"
+      "versions": [
+        {
+          "version": "1.0.22",
+          "recorded_at": "2026-10-19T14:49:14.556671+00:00"
+        }
+      ],
+      "updated_at": "2026-10-19T17:23:49.942744+00:00"
     },
     {
       "id": "https://happymod.to/jurassic-world-alive-700-7-mod/com.ludia.jw2",
@@ -1647,8 +1672,13 @@
       "download_url": "https://happymod.to/jurassic-world-alive-700-7-mod/com.ludia.jw2",
       "source": "HappyMod Games",
       "category": "ألعاب أندرويد",
-      "versions": [],
-      "updated_at": "2026-10-19T14:49:15.649348+00:00"
+      "versions": [
+        {
+          "version": "3.23.57",
+          "recorded_at": "2026-10-19T14:49:15.649348+00:00"
+        }
+      ],
+      "updated_at": "2026-10-19T17:23:51.131424+00:00"
     },
     {
       "id": "https://happymod.to/sprunki-beat-full-mod-music-mod/com.sprunki.mod.horror.incredibox.monster.beats.music.game",
@@ -1664,8 +1694,13 @@
       "download_url": "https://happymod.to/sprunki-beat-full-mod-music-mod/com.sprunki.mod.horror.incredibox.monster.beats.music.game",
       "source": "HappyMod Games",
       "category": "ألعاب أندرويد",
-      "versions": [],
-      "updated_at": "2026-10-19T14:49:16.522190+00:00"
+      "versions": [
+        {
+          "version": "0.3.7",
+          "recorded_at": "2026-10-19T14:49:16.522190+00:00"
+        }
+      ],
+      "updated_at": "2026-10-19T17:23:52.168813+00:00"
     },
     {
       "id": "https://happymod.to/poppy-playtime-chapter-4-mod/com.unrealplaystudio.playtime4",
@@ -1681,8 +1716,13 @@
       "download_url": "https://happymod.to/poppy-playtime-chapter-4-mod/com.unrealplaystudio.playtime4",
       "source": "HappyMod Games",
       "category": "ألعاب أندرويد",
-      "versions": [],
-      "updated_at": "2026-10-19T14:49:17.354592+00:00"
+      "versions": [
+        {
+          "version": "0.0.6",
+          "recorded_at": "2026-10-19T14:49:17.354592+00:00"
+        }
+      ],
+      "updated_at": "2026-10-19T17:23:53.210328+00:00"
     },
     {
       "id": "https://happymod.to/among-the-sleep-mod/com.snapbreak.amongthesleep",
@@ -1704,7 +1744,7 @@
           "recorded_at": "2026-10-19T14:49:49.081132+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:22:10.425090+00:00"
+      "updated_at": "2026-10-19T17:23:54.223203+00:00"
     },
     {
       "id": "https://happymod.to/warplanes-ww2-dogfight-mod/com.HomeNetGames.Warplanes",
@@ -1726,7 +1766,7 @@
           "recorded_at": "2026-10-19T14:49:50.119337+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:22:10.425107+00:00"
+      "updated_at": "2026-10-19T17:23:55.343176+00:00"
     },
     {
       "id": "https://happymod.to/my-cooking-mod/com.my.cooking.chef.kitchen.craze.fever",
@@ -1748,7 +1788,7 @@
           "recorded_at": "2026-10-19T14:49:51.068427+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:22:10.425124+00:00"
+      "updated_at": "2026-10-19T17:23:56.412346+00:00"
     },
     {
       "id": "https://happymod.to/bike-race-free-motorcycle-game-app-mod/com.topfreegames.bikeracefreeworld",
@@ -1770,7 +1810,7 @@
           "recorded_at": "2026-10-19T14:49:51.932529+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:22:10.425141+00:00"
+      "updated_at": "2026-10-19T17:23:57.451048+00:00"
     },
     {
       "id": "https://happymod.to/mystery-of-silence-mod/com.makingenemies.mos",
@@ -1792,7 +1832,7 @@
           "recorded_at": "2026-10-19T14:49:52.993894+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:22:10.425158+00:00"
+      "updated_at": "2026-10-19T17:23:58.388525+00:00"
     },
     {
       "id": "https://happymod.to/poppy-playtime-chapter-5-mod/com.unrealplaystudio.playtime5",
@@ -1814,7 +1854,7 @@
           "recorded_at": "2026-10-19T14:49:54.301345+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:22:10.425175+00:00"
+      "updated_at": "2026-10-19T17:23:59.431021+00:00"
     },
     {
       "id": "https://happymod.to/hitmasters-mod/com.playgendary.hitmasters",
@@ -1836,7 +1876,7 @@
           "recorded_at": "2026-10-19T14:49:55.193077+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:22:10.425192+00:00"
+      "updated_at": "2026-10-19T17:24:00.518014+00:00"
     },
     {
       "id": "https://happymod.to/claw-master-roguelike-hero-mod/hero.claw.master",
@@ -1858,7 +1898,7 @@
           "recorded_at": "2026-10-19T14:49:56.499226+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:22:10.425210+00:00"
+      "updated_at": "2026-10-19T17:24:01.437010+00:00"
     },
     {
       "id": "https://happymod.to/hidden-desire-mod/com.gpvideogame.hiddendesire",
@@ -1880,7 +1920,7 @@
           "recorded_at": "2026-10-19T14:49:57.277109+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:22:10.425227+00:00"
+      "updated_at": "2026-10-19T17:24:02.382683+00:00"
     },
     {
       "id": "https://happymod.to/super-market-master-mod/com.InSpace.CheckoutRush",
@@ -1902,7 +1942,7 @@
           "recorded_at": "2026-10-19T14:49:58.063927+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:22:10.425243+00:00"
+      "updated_at": "2026-10-19T17:24:03.376406+00:00"
     },
     {
       "id": "https://happymod.to/nowhere-prophet-mod/com.SharkbombStudios.NowhereProphet",
@@ -1924,7 +1964,7 @@
           "recorded_at": "2026-10-19T14:49:58.920180+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:22:10.425260+00:00"
+      "updated_at": "2026-10-19T17:24:04.332199+00:00"
     },
     {
       "id": "https://happymod.to/cat-quest-iii-mod/com.thegentlebros.catquestiii",
@@ -1946,7 +1986,7 @@
           "recorded_at": "2026-10-19T14:49:59.727287+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:22:10.425277+00:00"
+      "updated_at": "2026-10-19T17:24:05.260102+00:00"
     },
     {
       "id": "https://happymod.to/cat-quest-ii-mod/com.thegentlebros.catquestii",
@@ -1968,7 +2008,7 @@
           "recorded_at": "2026-10-19T14:50:00.560882+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:22:10.425294+00:00"
+      "updated_at": "2026-10-19T17:24:06.197184+00:00"
     },
     {
       "id": "https://happymod.to/dwarves-glory-death-and-loot-mod/com.sidekick.dwarves",
@@ -1990,7 +2030,7 @@
           "recorded_at": "2026-10-19T14:50:01.414916+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:22:10.425311+00:00"
+      "updated_at": "2026-10-19T17:24:07.150418+00:00"
     },
     {
       "id": "https://happymod.to/hidden-stuff-find-association-mod/com.goolny.hidden.association",
@@ -2012,7 +2052,7 @@
           "recorded_at": "2026-10-19T14:50:02.236895+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:22:10.425328+00:00"
+      "updated_at": "2026-10-19T17:24:08.074074+00:00"
     },
     {
       "id": "https://happymod.to/cookingo-perfect-meal-mod/com.cookingo.perfect.meal",
@@ -2034,7 +2074,7 @@
           "recorded_at": "2026-10-19T14:50:03.119378+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:22:10.425346+00:00"
+      "updated_at": "2026-10-19T17:24:09.120943+00:00"
     },
     {
       "id": "https://happymod.to/pepelo-2-around-the-world-mod/com.Tafusoft.Pepelo2",
@@ -2056,7 +2096,7 @@
           "recorded_at": "2026-10-19T14:50:03.949912+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:22:10.425362+00:00"
+      "updated_at": "2026-10-19T17:24:10.085863+00:00"
     },
     {
       "id": "https://happymod.to/battle-bag-war-zone-mod/com.brewgames.battlebagwarzone",
@@ -2078,7 +2118,7 @@
           "recorded_at": "2026-10-19T14:50:04.788839+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:22:10.425379+00:00"
+      "updated_at": "2026-10-19T17:24:11.028111+00:00"
     },
     {
       "id": "https://happymod.to/hide-photo-vault-mod/com.photovault.safevault.galleryvault",
@@ -2100,7 +2140,7 @@
           "recorded_at": "2026-10-19T14:50:05.649716+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:22:10.425396+00:00"
+      "updated_at": "2026-10-19T17:24:11.993136+00:00"
     },
     {
       "id": "https://happymod.to/tdz-pro-mod/com.leke.driversimulator",
@@ -2122,7 +2162,7 @@
           "recorded_at": "2026-10-19T14:50:06.455396+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:22:10.425413+00:00"
+      "updated_at": "2026-10-19T17:24:12.913695+00:00"
     },
     {
       "id": "https://happymod.to/cozy-coast-merge-adventure-mod/com.innogames.cozycoast",
@@ -2144,7 +2184,7 @@
           "recorded_at": "2026-10-19T14:50:07.296966+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:22:10.425430+00:00"
+      "updated_at": "2026-10-19T17:24:13.874135+00:00"
     },
     {
       "id": "https://happymod.to/ninja-raiden-revenge-mod/com.TendaGames.NewNinjaRaidenRevenge",
@@ -2166,7 +2206,7 @@
           "recorded_at": "2026-10-19T15:49:51.537849+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:22:10.424343+00:00"
+      "updated_at": "2026-10-19T17:24:14.936523+00:00"
     },
     {
       "id": "https://happymod.to/stick-empires-infinity-mod/com.stick.empires.infinity",
@@ -2188,7 +2228,7 @@
           "recorded_at": "2026-10-19T15:49:52.388555+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:22:10.424366+00:00"
+      "updated_at": "2026-10-19T17:24:15.954220+00:00"
     },
     {
       "id": "https://happymod.to/com-sinyee-babybus-gameworld-design-home-friends-fun-life-story-mod/com.sinyee.babybus.gameworld.design.home.friends.fun.life.story",
@@ -2210,7 +2250,7 @@
           "recorded_at": "2026-10-19T15:49:53.345392+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:22:10.424388+00:00"
+      "updated_at": "2026-10-19T17:24:17.017290+00:00"
     },
     {
       "id": "https://happymod.to/spider-man-3-mod/com.spiderherofighter.spiderman",
@@ -2232,7 +2272,7 @@
           "recorded_at": "2026-10-19T15:49:54.155457+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:22:10.424407+00:00"
+      "updated_at": "2026-10-19T17:24:18.089342+00:00"
     },
     {
       "id": "https://happymod.to/prison-escape-simulator-3d-mod/com.dmg.prison.escape.simulator",
@@ -2254,7 +2294,7 @@
           "recorded_at": "2026-10-19T15:49:55.271130+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:22:10.424430+00:00"
+      "updated_at": "2026-10-19T17:24:19.182740+00:00"
     },
     {
       "id": "https://happymod.to/football-league-2023-mod/com.football.soccer.league",
@@ -2276,7 +2316,7 @@
           "recorded_at": "2026-10-19T15:49:56.130475+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:22:10.424449+00:00"
+      "updated_at": "2026-10-19T17:24:20.204400+00:00"
     },
     {
       "id": "https://happymod.to/dredge-mod/com.BlackSaltGames.DREDGE",
@@ -2298,7 +2338,7 @@
           "recorded_at": "2026-10-19T15:49:56.962322+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:22:10.424468+00:00"
+      "updated_at": "2026-10-19T17:24:21.261215+00:00"
     },
     {
       "id": "https://happymod.to/traffic-motos-3-mod/com.netfreegames.trm3",
@@ -2320,7 +2360,7 @@
           "recorded_at": "2026-10-19T15:49:57.804762+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:22:10.424485+00:00"
+      "updated_at": "2026-10-19T17:24:22.393777+00:00"
     },
     {
       "id": "https://happymod.to/metal-slug-x-mod/com.dotemu.neogeo.mslugx",
@@ -2342,7 +2382,7 @@
           "recorded_at": "2026-10-19T17:05:41.968937+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:06:54.674283+00:00"
+      "updated_at": "2026-10-19T17:24:23.474871+00:00"
     },
     {
       "id": "https://happymod.to/universal-truck-simulator-mod/com.dualcarbon.universaltrucksimulator",
@@ -2364,7 +2404,7 @@
           "recorded_at": "2026-10-19T17:05:42.894425+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:06:55.575317+00:00"
+      "updated_at": "2026-10-19T17:24:24.585295+00:00"
     },
     {
       "id": "https://happymod.to/ninja-warrior-legend-of-shadow-fighting-games-055-7-mod/com.tohsoft.arashi.ninja.shadow",
@@ -2386,7 +2426,7 @@
           "recorded_at": "2026-10-19T17:05:43.741697+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:06:56.394646+00:00"
+      "updated_at": "2026-10-19T17:24:25.656763+00:00"
     },
     {
       "id": "https://happymod.to/z-raft-mod/com.ozuma.zraft",
@@ -2408,7 +2448,7 @@
           "recorded_at": "2026-10-19T17:05:44.733016+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:06:57.303775+00:00"
+      "updated_at": "2026-10-19T17:24:26.723206+00:00"
     },
     {
       "id": "https://happymod.to/the-pirate-plague-of-the-dead-mod/com.HomeNetGames.Pirates2",
@@ -2430,7 +2470,7 @@
           "recorded_at": "2026-10-19T17:05:45.615724+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:06:58.093471+00:00"
+      "updated_at": "2026-10-19T17:24:27.825998+00:00"
     },
     {
       "id": "https://happymod.to/merge-archers-castle-defense-mod/merge.archers",
@@ -2452,7 +2492,7 @@
           "recorded_at": "2026-10-19T17:05:46.608698+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:06:58.860533+00:00"
+      "updated_at": "2026-10-19T17:24:28.883355+00:00"
     },
     {
       "id": "https://happymod.to/console-tycoon-mod/com.roasterygames.consoletycoon",
@@ -2474,7 +2514,7 @@
           "recorded_at": "2026-10-19T17:05:47.388865+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:06:59.551159+00:00"
+      "updated_at": "2026-10-19T17:24:30.580152+00:00"
     },
     {
       "id": "https://happymod.to/fish-eater-io-mod/com.hg.FishEaterPro",
@@ -2496,7 +2536,7 @@
           "recorded_at": "2026-10-19T17:05:48.132074+00:00"
         }
       ],
-      "updated_at": "2026-10-19T17:07:00.272376+00:00"
+      "updated_at": "2026-10-19T17:24:32.019093+00:00"
     },
     {
       "id": "https://happymod.to/jurassic-defense-mod/com.Thatboy.JurassicDefence",
@@ -2512,8 +2552,13 @@
       "download_url": "https://happymod.to/jurassic-defense-mod/com.Thatboy.JurassicDefence",
       "source": "HappyMod Games",
       "category": "ألعاب أندرويد",
-      "versions": [],
-      "updated_at": "2026-10-19T17:21:51.149493+00:00"
+      "versions": [
+        {
+          "version": "1.1.5",
+          "recorded_at": "2026-10-19T17:21:51.149493+00:00"
+        }
+      ],
+      "updated_at": "2026-10-19T17:24:32.971860+00:00"
     },
     {
       "id": "https://happymod.to/sugar-rush-adventure-mod/com.gimica.sugarmatch",
@@ -2529,8 +2574,13 @@
       "download_url": "https://happymod.to/sugar-rush-adventure-mod/com.gimica.sugarmatch",
       "source": "HappyMod Games",
       "category": "ألعاب أندرويد",
-      "versions": [],
-      "updated_at": "2026-10-19T17:21:52.099288+00:00"
+      "versions": [
+        {
+          "version": "1.14.0",
+          "recorded_at": "2026-10-19T17:21:52.099288+00:00"
+        }
+      ],
+      "updated_at": "2026-10-19T17:24:33.857360+00:00"
     },
     {
       "id": "https://happymod.to/christmas-fable-snowflake-f2p-mod/com.dominigames.cf2full.free2play",
@@ -2856,20 +2906,20 @@
       "updated_at": "2026-10-19T17:22:10.173658+00:00"
     }
   ],
-  "last_checked": "2026-10-19T17:23:00.590555+00:00",
-  "version_check_cursor": 76,
+  "last_checked": "2026-10-19T17:24:34.107590+00:00",
+  "version_check_cursor": 126,
   "source_status": {
     "HappyMod Games": {
       "status": "success",
-      "games_found": 100,
-      "checked_at": "2026-10-19T17:22:10.425707+00:00"
+      "games_found": 0,
+      "checked_at": "2026-10-19T17:23:41.375101+00:00"
     }
   },
   "last_update_summary": {
-    "previous_games": 124,
+    "previous_games": 145,
     "total_saved_games": 145,
-    "pages_collected_this_run": 100,
+    "pages_collected_this_run": 0,
     "version_checks_per_run": 50,
-    "checked_at": "2026-10-19T17:23:00.590608+00:00"
+    "checked_at": "2026-10-19T17:24:34.107619+00:00"
   }
 }
