@@ -263,7 +263,9 @@ def get_description(parser):
     )
 
 
+
 def get_image(parser, page_url):
+    # Prefer real game artwork from page metadata.
     candidates = [
         parser.meta.get("og:image", ""),
         parser.meta.get("og:image:url", ""),
@@ -271,30 +273,64 @@ def get_image(parser, page_url):
         parser.meta.get("twitter:image:src", ""),
     ]
 
-    candidates.extend(item["src"] for item in parser.images)
+    # Include lazy-loaded images and responsive image sources.
+    for item in parser.images:
+        candidates.append(item.get("src", ""))
+
+    blocked_names = (
+        "logo",
+        "favicon",
+        "placeholder",
+        "default-avatar",
+        "grey.gif",
+        "loading",
+        "loader",
+        "spinner",
+        "no-image",
+        "no_image",
+        "default-image",
+        "pixel",
+        "spacer",
+    )
+
+    seen = set()
 
     for candidate in candidates:
-        if not candidate:
+        candidate = html.unescape(
+            str(candidate or "")
+        ).strip()
+
+        if not candidate or candidate.startswith("data:"):
             continue
 
-        image_url = urljoin(page_url, candidate.strip())
+        image_url = urljoin(page_url, candidate)
         parsed = urlparse(image_url)
 
         if parsed.scheme not in ("http", "https"):
             continue
 
+        if image_url in seen:
+            continue
+
+        seen.add(image_url)
+
         filename = parsed.path.lower().rsplit("/", 1)[-1]
 
-        if any(word in filename for word in (
-            "logo",
-            "favicon",
-            "placeholder",
-            "default-avatar",
-            "grey.gif",
+        if any(word in filename for word in blocked_names):
+            continue
+
+        if parsed.path.lower().endswith((
+            ".html",
+            ".htm",
+            ".php",
+            ".js",
+            ".css",
+            ".svg",
         )):
             continue
 
-        if filename.endswith((
+        # Accept image URLs with normal extensions.
+        if parsed.path.lower().endswith((
             ".jpg",
             ".jpeg",
             ".png",
@@ -304,7 +340,20 @@ def get_image(parser, page_url):
         )):
             return image_url
 
+        # Some image CDNs use URLs without file extensions.
+        host = parsed.netloc.lower()
+        if any(name in host for name in (
+            "happymod",
+            "traidmod",
+            "cloudinary",
+            "googleusercontent",
+            "imgur",
+            "cdn",
+        )):
+            return image_url
+
     return ""
+
 
 
 def is_blocked_url(url):
