@@ -604,11 +604,18 @@ def main():
     if not isinstance(database, dict):
         raise ValueError("games.json must contain a JSON object.")
 
-    old_games = database.get("games", [])
+        old_games = database.get("games", [])
     if not isinstance(old_games, list):
         old_games = []
 
-    # Start with every saved game. New scans must not delete old entries.
+    # Keep only saved HappyMod games.
+    old_games = [
+        game for game in old_games
+        if isinstance(game, dict)
+        and game.get("source") == "HappyMod Games"
+    ]
+
+    # Start with the remaining saved games.
     merged_games = {}
     for game in old_games:
         if not isinstance(game, dict):
