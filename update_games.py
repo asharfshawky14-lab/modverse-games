@@ -29,7 +29,6 @@ VERSION_RE = re.compile(
     r"([0-9]+(?:\.[0-9A-Za-z]+){1,5})",
     re.IGNORECASE,
 )
-)
 SIZE_RE = re.compile(r"\b(\d+(?:\.\d+)?)\s*(KB|MB|GB)\b", re.I)
 ANDROID_RE = re.compile(
     r"(?:Android|أندرويد)\s*(\d+(?:\.\d+)?(?:\+)?)", re.I
