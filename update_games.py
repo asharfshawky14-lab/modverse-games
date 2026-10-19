@@ -619,36 +619,34 @@ def main():
     if not isinstance(database, dict):
         raise ValueError("games.json must contain a JSON object.")
 
+    
     old_games = database.get("games", [])
     if not isinstance(old_games, list):
         old_games = []
-    # Keep only saved HappyMod games.
-    old_games = database.get("games", [])
-if not isinstance(old_games, list):
-    old_games = []
 
-# Keep only actual HappyMod game detail pages.
-cleaned_old_games = []
-for game in old_games:
-    if not isinstance(game, dict):
-        continue
+    # Keep only actual HappyMod game detail pages.
+    cleaned_old_games = []
+    for game in old_games:
+        if not isinstance(game, dict):
+            continue
 
-    if game.get("source") != "HappyMod Games":
-        continue
+        if game.get("source") != "HappyMod Games":
+            continue
 
-    game_url = (
-        game.get("detail_url")
-        or game.get("url")
-        or game.get("id")
-        or ""
-    )
+        game_url = (
+            game.get("detail_url")
+            or game.get("url")
+            or game.get("id")
+            or ""
+        )
 
-    if not game_url or is_blocked_url(game_url):
-        continue
+        if not game_url or is_blocked_url(game_url):
+            continue
 
-    cleaned_old_games.append(game)
+        cleaned_old_games.append(game)
 
-old_games = cleaned_old_games
+    old_games = cleaned_old_games
+
 
     # Start with the remaining saved games.
     merged_games = {}
