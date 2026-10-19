@@ -7,9 +7,7 @@ import time
 import urllib.request
 from datetime import datetime, timezone
 from html.parser import HTMLParser
-from urllib.parse import (
-    urljoin, urlparse, urldefrag, parse_qs, urlencode, urlunparse
-)
+from urllib.parse import urljoin, urlparse, urldefrag, parse_qs, urlunparse
 
 DATABASE = "games.json"
 TIMEOUT = 20
@@ -82,13 +80,31 @@ def normalized_host(url):
     return urlparse(url).netloc.lower().removeprefix("www.")
 
 
+def is_same_site(url, base_url):
+    """Allow the old and new HappyMod hosts during migration."""
+    host = normalized_host(url)
+    base_host = normalized_host(base_url)
+
+    happymod_hosts = {"happymod.to", "ardown.happymod.to"}
+
+    if host in happymod_hosts and base_host in happymod_hosts:
+        return True
+
+    return host == base_host
+
+
 def canonical_url(url):
-    """Remove fragments and tracking/query parameters from game URLs."""
+    """Normalize URLs and migrate legacy HappyMod links."""
     parsed = urlparse(url)
     path = parsed.path.rstrip("/") or "/"
+    host = parsed.netloc.lower()
+
+    if host in ("happymod.to", "www.happymod.to"):
+        host = "ardown.happymod.to"
+
     return urlunparse((
         parsed.scheme.lower(),
-        parsed.netloc.lower(),
+        host,
         path,
         "",
         "",
@@ -105,12 +121,15 @@ def fetch_url(url):
             "Accept-Language": "en-US,en;q=0.8,ar;q=0.6",
         },
     )
+
     with urllib.request.urlopen(request, timeout=TIMEOUT) as response:
         content_type = response.headers.get("Content-Type", "").lower()
+
         if content_type and not (
             "html" in content_type or "xhtml" in content_type
         ):
             raise ValueError("The URL did not return an HTML page.")
+
         body = response.read().decode("utf-8", errors="replace")
         return body, response.geturl()
 
@@ -144,7 +163,9 @@ class PageParser(HTMLParser):
                 or attrs.get("itemprop")
                 or ""
             ).lower()
+
             value = attrs.get("content", "").strip()
+
             if key and value:
                 self.meta[key] = value
 
@@ -162,6 +183,7 @@ class PageParser(HTMLParser):
                 or attrs.get("src")
                 or ""
             ).strip()
+
             if src:
                 self.images.append({
                     "src": src,
@@ -173,6 +195,7 @@ class PageParser(HTMLParser):
             return
 
         value = data.strip()
+
         if not value:
             return
 
@@ -225,6 +248,7 @@ def get_image(parser, page_url):
         parser.meta.get("twitter:image:src", ""),
         parser.meta.get("og:image:url", ""),
     ]
+
     candidates.extend(item["src"] for item in parser.images)
 
     for candidate in candidates:
@@ -233,10 +257,12 @@ def get_image(parser, page_url):
 
         image_url = urljoin(page_url, candidate.strip())
         parsed = urlparse(image_url)
+
         if parsed.scheme not in ("http", "https"):
             continue
 
         filename = parsed.path.lower().rsplit("/", 1)[-1]
+
         if any(word in filename for word in (
             "logo", "favicon", "placeholder", "default-avatar"
         )):
@@ -250,7 +276,6 @@ def get_image(parser, page_url):
     return ""
 
 
-
 def is_blocked_url(url):
     parsed = urlparse(url)
     path = parsed.path.lower().rstrip("/")
@@ -261,11 +286,9 @@ def is_blocked_url(url):
     if any(part in path for part in BLOCKED_PATH_PARTS):
         return True
 
-    # استبعاد صفحات أقسام الألعاب
     if re.fullmatch(r"/games/[^/]+", path):
         return True
 
-    # استبعاد صفحات التنقل العامة
     if path in (
         "/game-mod.html",
         "/app-mod.html",
@@ -273,11 +296,9 @@ def is_blocked_url(url):
     ):
         return True
 
-    # استبعاد صفحات التصنيفات المرقمة مثل /art-design/1
     if re.fullmatch(r"/[a-z0-9-]+/\d+", path):
         return True
 
-    # استبعاد الملفات التي ليست صفحات ألعاب
     if path.endswith((
         ".jpg", ".jpeg", ".png", ".webp", ".gif", ".css",
         ".js", ".xml", ".pdf", ".zip", ".apk", ".mp4",
@@ -285,7 +306,6 @@ def is_blocked_url(url):
         return True
 
     return False
-
 
 
 def looks_like_listing_url(url, anchor_text=""):
@@ -332,15 +352,17 @@ def looks_like_game(title, url, description):
         "home", "happymod", "traidmod", "traid mod",
         "ألعاب أندرويد",
     }
+
     if title_lower.strip(" -|") in generic_titles:
         return False
 
     if any(word in combined for word in GAME_WORDS):
         return True
 
-    # HappyMod detail URLs sometimes have no obvious game keyword.
     return (
-        normalized_host(url) == "happymod.to"
+        normalized_host(url) in (
+            "happymod.to", "ardown.happymod.to"
+        )
         and len([part for part in path.split("/") if part]) >= 2
         and len(description) >= 25
     )
@@ -375,7 +397,6 @@ def extract_game(parser, page_url, source_name):
         "android": android_match.group(1) if android_match else "",
         "url": game_url,
         "detail_url": game_url,
-        # This is the game's detail page, not necessarily a direct APK.
         "download_url": game_url,
         "source": source_name,
         "category": "ألعاب أندرويد",
@@ -390,6 +411,7 @@ def collect_listing_links(parser, listing_url, base_url):
 
     for anchor in parser.anchors:
         href = anchor["href"].strip()
+
         if not href:
             continue
 
@@ -426,10 +448,12 @@ def read_html_source(source):
 
         if listing_key in seen_listing:
             continue
+
         seen_listing.add(listing_key)
 
         try:
             page_html, final_url = fetch_url(listing_url)
+
             if not is_same_site(final_url, source_url):
                 continue
 
@@ -442,12 +466,14 @@ def read_html_source(source):
 
             for url in details:
                 key = canonical_url(url)
+
                 if key not in seen_details:
                     seen_details.add(key)
                     detail_queue.append(url)
 
             for url in more_listings:
                 key = canonical_url(url)
+
                 if key not in seen_listing and len(
                     listing_queue
                 ) + len(seen_listing) < MAX_LISTING_PAGES_PER_SOURCE:
@@ -475,6 +501,7 @@ def read_html_source(source):
 
             parser = PageParser()
             parser.feed(page_html)
+
             game = extract_game(parser, final_url, source_name)
 
             if game:
@@ -493,12 +520,13 @@ def read_html_source(source):
 def game_key(game):
     for field in ("url", "detail_url", "id"):
         value = str(game.get(field, "")).strip()
+
         if value.startswith(("https://", "http://")):
             return canonical_url(value)
 
-    # Fallback for old entries without a URL.
     title = clean_text(game.get("title") or game.get("name")).lower()
     source = clean_text(game.get("source")).lower()
+
     return f"title:{source}:{title}"
 
 
@@ -510,6 +538,7 @@ def merge_game(old_game, new_game):
     new_version = str(new_game.get("version") or "").strip()
 
     old_versions = old_game.get("versions", [])
+
     if not isinstance(old_versions, list):
         old_versions = []
 
@@ -539,7 +568,6 @@ def merge_game(old_game, new_game):
             "recorded_at": now_utc(),
         })
 
-    # Never replace a useful existing value with an empty scraped value.
     for key, value in new_game.items():
         if value not in ("", None, [], {}):
             merged[key] = value
@@ -564,6 +592,7 @@ def check_existing_versions(games, start_index):
 
     while checked < count:
         game = games[index]
+
         url = (
             game.get("detail_url")
             or game.get("url")
@@ -585,6 +614,7 @@ def check_existing_versions(games, start_index):
 
                 if refreshed:
                     games[index] = merge_game(game, refreshed)
+
                     print(
                         "VERSION CHECKED:",
                         games[index].get("title", ""),
@@ -604,8 +634,7 @@ def check_existing_versions(games, start_index):
         checked += 1
         index = (index + 1) % len(games)
 
-    next_index = index
-    return games, next_index
+    return games, index
 
 
 def main():
@@ -620,13 +649,14 @@ def main():
     if not isinstance(database, dict):
         raise ValueError("games.json must contain a JSON object.")
 
-    
     old_games = database.get("games", [])
+
     if not isinstance(old_games, list):
         old_games = []
 
-    # Keep only actual HappyMod game detail pages.
+    # Preserve saved HappyMod games and migrate old URLs.
     cleaned_old_games = []
+
     for game in old_games:
         if not isinstance(game, dict):
             continue
@@ -644,23 +674,31 @@ def main():
         if not game_url or is_blocked_url(game_url):
             continue
 
+        for field in ("id", "url", "detail_url", "download_url"):
+            value = game.get(field)
+
+            if (
+                isinstance(value, str)
+                and value.startswith(("https://", "http://"))
+            ):
+                game[field] = canonical_url(value)
+
         cleaned_old_games.append(game)
 
     old_games = cleaned_old_games
 
-
-    # Start with the remaining saved games.
     merged_games = {}
+
     for game in old_games:
-        if not isinstance(game, dict):
-            continue
         key = game_key(game)
+
         if key in merged_games:
             merged_games[key] = merge_game(merged_games[key], game)
         else:
             merged_games[key] = game
 
     sources = database.get("sources", [])
+
     if not isinstance(sources, list) or not sources:
         raise RuntimeError(
             "No configured sources. Existing database was not changed."
@@ -675,6 +713,7 @@ def main():
 
         if source_type not in ("happymod_html", "traidmod_html"):
             print("Skipping unsupported source:", source_name)
+
             source_status[source_name] = {
                 "status": "skipped",
                 "checked_at": now_utc(),
@@ -683,6 +722,7 @@ def main():
 
         if not str(source.get("url", "")).startswith("https://"):
             print("Skipping non-HTTPS source:", source_name)
+
             source_status[source_name] = {
                 "status": "invalid_url",
                 "checked_at": now_utc(),
@@ -691,6 +731,7 @@ def main():
 
         try:
             found_games = read_html_source(source)
+
             for new_game in found_games:
                 key = game_key(new_game)
 
@@ -712,6 +753,7 @@ def main():
 
         except Exception as error:
             print(f"Source failed: {source_name}: {error}")
+
             source_status[source_name] = {
                 "status": "failed",
                 "error": str(error)[:300],
@@ -721,6 +763,7 @@ def main():
     games = list(merged_games.values())
 
     cursor = database.get("version_check_cursor", 0)
+
     try:
         cursor = int(cursor)
     except (TypeError, ValueError):
@@ -728,17 +771,18 @@ def main():
 
     games, next_cursor = check_existing_versions(games, cursor)
 
-    # Safety: never save an empty catalog over a populated catalog.
+    # Never overwrite a populated catalog with an empty list.
     if old_games and not games:
         raise RuntimeError(
-            "Safety check failed: refusing to replace the catalog with "
-            "an empty list."
+            "Safety check failed: refusing to replace the catalog "
+            "with an empty list."
         )
 
     database["games"] = games
     database["last_checked"] = now_utc()
     database["version_check_cursor"] = next_cursor
     database["source_status"] = source_status
+
     database["last_update_summary"] = {
         "previous_games": len(old_games),
         "total_saved_games": len(games),
