@@ -249,10 +249,6 @@ def get_image(parser, page_url):
     return ""
 
 
-def is_same_site(url, base_url):
-    return normalized_host(url) == normalized_host(base_url)
-
-
 
 def is_blocked_url(url):
     parsed = urlparse(url)
@@ -264,11 +260,11 @@ def is_blocked_url(url):
     if any(part in path for part in BLOCKED_PATH_PARTS):
         return True
 
-    # استبعاد صفحات أقسام الألعاب مثل /games/action
+    # استبعاد صفحات أقسام الألعاب
     if re.fullmatch(r"/games/[^/]+", path):
         return True
 
-    # استبعاد صفحات التنقل العامة وليست ألعابًا
+    # استبعاد صفحات التنقل العامة
     if path in (
         "/game-mod.html",
         "/app-mod.html",
@@ -276,6 +272,11 @@ def is_blocked_url(url):
     ):
         return True
 
+    # استبعاد صفحات التصنيفات المرقمة مثل /art-design/1
+    if re.fullmatch(r"/[a-z0-9-]+/\d+", path):
+        return True
+
+    # استبعاد الملفات التي ليست صفحات ألعاب
     if path.endswith((
         ".jpg", ".jpeg", ".png", ".webp", ".gif", ".css",
         ".js", ".xml", ".pdf", ".zip", ".apk", ".mp4",
@@ -283,6 +284,7 @@ def is_blocked_url(url):
         return True
 
     return False
+
 
 
 def looks_like_listing_url(url, anchor_text=""):
