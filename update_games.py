@@ -593,12 +593,12 @@ def check_existing_versions(games, start_index):
 
 
 def main():
-    if not os.path.exists(DATABASE):
+        if not os.path.exists(DATABASE):
         raise FileNotFoundError(
             "games.json is missing; existing data was not changed."
         )
 
-            with open(DATABASE, "r", encoding="utf-8") as file:
+    with open(DATABASE, "r", encoding="utf-8") as file:
         database = json.load(file)
 
     if not isinstance(database, dict):
