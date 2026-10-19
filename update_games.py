@@ -65,6 +65,7 @@ BLOCKED_PATH_PARTS = (
     "/login", "/register", "/account", "/privacy",
     "/terms", "/contact", "/about", "/author/",
     "/tag/", "/category/", "/search", "/downloaders/",
+    "/security",
 )
 
 
