@@ -623,11 +623,32 @@ def main():
     if not isinstance(old_games, list):
         old_games = []
     # Keep only saved HappyMod games.
-    old_games = [
-        game for game in old_games
-        if isinstance(game, dict)
-        and game.get("source") == "HappyMod Games"
-    ]
+    old_games = database.get("games", [])
+if not isinstance(old_games, list):
+    old_games = []
+
+# Keep only actual HappyMod game detail pages.
+cleaned_old_games = []
+for game in old_games:
+    if not isinstance(game, dict):
+        continue
+
+    if game.get("source") != "HappyMod Games":
+        continue
+
+    game_url = (
+        game.get("detail_url")
+        or game.get("url")
+        or game.get("id")
+        or ""
+    )
+
+    if not game_url or is_blocked_url(game_url):
+        continue
+
+    cleaned_old_games.append(game)
+
+old_games = cleaned_old_games
 
     # Start with the remaining saved games.
     merged_games = {}
