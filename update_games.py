@@ -679,17 +679,7 @@ def main():
             "fl studio mobile",
         )
 
-        if any(name in saved_title for name in non_game_titles):
-            continue
-
-        if "/faq/" in str(game_url).lower():
-            continue
-
-        non_game_titles = (
-            "winlator",
-            "capcut",
-            "fl studio mobile",
-        )
+       
 
         if any(name in saved_title for name in non_game_titles):
             continue
