@@ -416,13 +416,20 @@ def looks_like_listing_url(url, anchor_text=""):
 
 def looks_like_game(title, url, description):
     title_lower = clean_text(title).lower()
-    path = urlparse(url).path.lower()
+    path = urlparse(url).path.lower().rstrip("/")
     combined = title_lower + " " + path
 
     if len(title_lower) < 2 or is_blocked_url(url):
         return False
 
-    # Reject article/help titles before considering game keywords.
+    # Reject listing and topic pages that are not individual games.
+    if path == "/topics" or path.startswith("/topics/"):
+        return False
+
+    if path in ("/new.html", "/top.html"):
+        return False
+
+    # Reject article and help pages.
     if any(word in title_lower for word in ARTICLE_WORDS):
         return False
 
@@ -430,23 +437,33 @@ def looks_like_game(title, url, description):
         return False
 
     generic_titles = {
-        "games", "android games", "apps", "applications",
-        "home", "happymod", "traidmod", "traid mod",
+        "games",
+        "android games",
+        "apps",
+        "applications",
+        "home",
+        "happymod",
+        "traidmod",
+        "traid mod",
         "ألعاب أندرويد",
     }
 
     if title_lower.strip(" -|") in generic_titles:
         return False
 
+    # Accept pages that clearly match known game keywords.
     if any(word in combined for word in GAME_WORDS):
         return True
 
-    # Keep the original HappyMod fallback for possible game pages.
+    # Conservative fallback for likely individual HappyMod game pages.
     return (
         normalized_host(url) in (
-            "happymod.to", "ardown.happymod.to"
+            "happymod.to",
+            "ardown.happymod.to",
         )
-        and len([part for part in path.split("/") if part]) >= 2
+        and len([
+            part for part in path.split("/") if part
+        ]) >= 2
         and len(description) >= 25
     )
 
